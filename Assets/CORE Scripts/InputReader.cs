@@ -8,6 +8,8 @@ public class InputReader : ScriptableObject, GameInput.IPlayerActions
     //camara
     public event UnityAction<Vector2> MoveEvent; //WASD
     public event UnityAction<Vector2> LookEvent; // mouse delta
+    public event UnityAction<bool> RotateCameraEvent; // middle mouse button hold for camera rotation
+    public event UnityAction<float> CameraZoomEvent; // mouse scroll wheel
 
     //RTS core
     public event UnityAction<Vector2> PointerPositionEvent; // mouse position in world space
@@ -44,7 +46,7 @@ public class InputReader : ScriptableObject, GameInput.IPlayerActions
 
     public void OnMove(InputAction.CallbackContext context)
     {
-       MoveEvent?.Invoke(context.ReadValue<Vector2>());
+        MoveEvent?.Invoke(context.ReadValue<Vector2>());
     }
 
     public void OnLook(InputAction.CallbackContext context)
@@ -76,5 +78,18 @@ public class InputReader : ScriptableObject, GameInput.IPlayerActions
     {
         if (context.phase == InputActionPhase.Performed)
             MenuPauseEvent?.Invoke();
+    }
+
+    public void OnRotateCamera(InputAction.CallbackContext context)
+    {
+       if (context.phase == InputActionPhase.Performed)
+            RotateCameraEvent?.Invoke(true);
+       else if (context.phase == InputActionPhase.Canceled)
+            RotateCameraEvent?.Invoke(false);
+    }
+
+    public void OnCameraZoom(InputAction.CallbackContext context)
+    {
+        CameraZoomEvent?.Invoke(context.ReadValue<float>());
     }
 }

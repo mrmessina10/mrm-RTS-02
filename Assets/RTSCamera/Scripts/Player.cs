@@ -1,12 +1,16 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.Cinemachine;
+using UnityEngine.Rendering;
 
 
 namespace Assets.RTSCamera.Scripts
 {
     public class Player : MonoBehaviour
     {
+        [Header("Architecture")]
+        [SerializeField] private InputReader inputReader;
+
         [Header("Movement Settings")]
         [SerializeField] float moveSpeed = 20f;
         [SerializeField] AnimationCurve moveSpeedZoomCurve = AnimationCurve.Linear(0f, 0.5f, 1f, 1f);
@@ -43,37 +47,87 @@ namespace Assets.RTSCamera.Scripts
         }
 
 
-            [Header("Components")]
+        [Header("Components")]
         [SerializeField] Transform cameraTarget;
         [SerializeField] CinemachineOrbitalFollow orbitalFollow;
 
-        #region Input
-
         Vector2 moveInput;
         Vector2 lookInput;
-        Vector2 scrollInput;
-        bool middleClickInput = false;
+        float zoomInput;
+        bool isRotatingCamera = false;
+        Vector2 currentMousePosition;
 
-        void OnMove(InputValue value)
+        #region Event Subscription
+
+        private void OnEnable() //subscribo a los canales de InputReader
         {
-            moveInput = value.Get<Vector2>();
+            if (inputReader == null)
+            {
+                Debug.LogError("InputReader reference is missing on Player script.");
+                return;
+            }
+
+            inputReader.MoveEvent += HandleMove;
+            inputReader.LookEvent += HandleLook;
+            inputReader.CameraZoomEvent += HandleZoom;
+            inputReader.RotateCameraEvent += HandleRotateCamera;
+            inputReader.PointerPositionEvent += HandlePointerPosition;
         }
 
-        void OnLook(InputValue value)
+        private void OnDisable() //desubscribo para evitar memory leaks
         {
-            lookInput = value.Get<Vector2>();
-        }
-        void OnScrollWheel(InputValue value)
-        {
-            scrollInput = value.Get<Vector2>();
-        }
+            if (inputReader == null)
+                return;
 
-        void OnMiddleClick(InputValue value)
-        {
-            middleClickInput = value.isPressed;
+            inputReader.MoveEvent -= HandleMove;
+            inputReader.LookEvent -= HandleLook;
+            inputReader.CameraZoomEvent -= HandleZoom;
+            inputReader.RotateCameraEvent -= HandleRotateCamera;
+            inputReader.PointerPositionEvent -= HandlePointerPosition;
         }
 
         #endregion
+
+        #region Input Handlers
+        private void HandleMove(Vector2 newMoveInput) => moveInput = newMoveInput;
+
+        private void HandleLook(Vector2 newLookInput) => lookInput = newLookInput;
+
+        private void HandleZoom(float newZoomInput) => zoomInput = newZoomInput;
+
+        private void HandleRotateCamera(bool isPressed) => isRotatingCamera = isPressed;
+
+        private void HandlePointerPosition(Vector2 position) => currentMousePosition = position;
+        #endregion
+
+        //========================= Legacy controls ==============================
+        //#region Input
+
+        //Vector2 moveInput;
+        //Vector2 lookInput;
+        //Vector2 scrollInput;
+        //bool middleClickInput = false;
+
+        //void OnMove(InputValue value)
+        //{
+        //    moveInput = value.Get<Vector2>();
+        //}
+
+        //void OnLook(InputValue value)
+        //{
+        //    lookInput = value.Get<Vector2>();
+        //}
+        //void OnScrollWheel(InputValue value)
+        //{
+        //    scrollInput = value.Get<Vector2>();
+        //}
+
+        //void OnMiddleClick(InputValue value)
+        //{
+        //    middleClickInput = value.isPressed;
+        //}
+
+        //#endregion
 
         #region Unity Methods
 
@@ -128,7 +182,8 @@ namespace Assets.RTSCamera.Scripts
 
         void UpdateOrbit(float deltaTime)
         {
-            Vector2 orbitInput = lookInput * (middleClickInput ? 1f : 0f);
+            Vector2 orbitInput = lookInput * (isRotatingCamera ? 1f : 0f);
+            // Vector2 orbitInput = lookInput * (middleClickInput ? 1f : 0f); // legacy
 
             orbitInput *= orbitSensitivity;
 
@@ -151,10 +206,16 @@ namespace Assets.RTSCamera.Scripts
 
             float targetZoomSpeed = 0f;
 
-            if (Mathf.Abs(scrollInput.y) > 0.01f)
+            if (Mathf.Abs(zoomInput) > 0.01f)
             {
-                targetZoomSpeed = zoomSpeed * scrollInput.y;
+                targetZoomSpeed = zoomSpeed * Mathf.Clamp(zoomInput, -1f, 1f);
             }
+
+            // == legacy ==
+            //if (Mathf.Abs(scrollInput.y) > 0.01f)
+            //{
+            //    targetZoomSpeed = zoomSpeed * scrollInput.y;
+            //}
 
             currentZoomSpeed = Mathf.Lerp(currentZoomSpeed, targetZoomSpeed, zoomSmoothing * deltaTime);
 
@@ -166,9 +227,12 @@ namespace Assets.RTSCamera.Scripts
 
         void UpdateEdgeScrolling()
         {
-            Vector2 mousePosition = Mouse.current.position.ReadValue(); //metodo del paquete de inputs obtiene la posicion del mouse en pantalla
+            Vector2 mousePosition = currentMousePosition;
 
-            edgeScrollInput= Vector2.zero;
+            // == legacy ==
+            //Vector2 mousePosition = Mouse.current.position.ReadValue(); //metodo del paquete de inputs obtiene la posicion del mouse en pantalla
+
+            edgeScrollInput = Vector2.zero;
 
             if (mousePosition.x < edgeScrollMargin)
             {
@@ -198,5 +262,5 @@ namespace Assets.RTSCamera.Scripts
             }
         }
         #endregion
-        }
     }
+}
