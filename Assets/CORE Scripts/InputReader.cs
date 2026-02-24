@@ -1,0 +1,80 @@
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.InputSystem;
+
+[CreateAssetMenu(fileName = "InputReader", menuName = "ScriptableObjects/InputReader", order = 1)]
+public class InputReader : ScriptableObject, GameInput.IPlayerActions
+{
+    //camara
+    public event UnityAction<Vector2> MoveEvent; //WASD
+    public event UnityAction<Vector2> LookEvent; // mouse delta
+
+    //RTS core
+    public event UnityAction<Vector2> PointerPositionEvent; // mouse position in world space
+    public event UnityAction SelectEvent; // left click
+    public event UnityAction SelectCanceledEvent; // left click released for box selection
+    public event UnityAction CommandEvent; // right click
+    public event UnityAction MenuPauseEvent; // Pause key
+
+    private GameInput gameInput;
+
+    private void OnEnable()
+    {
+        if (gameInput == null)
+        {
+            gameInput = new GameInput();
+
+            gameInput.Player.SetCallbacks(this); //conexion de los eventos del input system con los métodos de esta clase
+            gameInput.Player.Enable();
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (gameInput != null)
+        {
+            gameInput.Player.Disable();
+        }
+
+    }
+
+    //=======================================================
+    //  Implementacion de interfaz GameInput.IPlayerActions
+    //=======================================================
+
+    public void OnMove(InputAction.CallbackContext context)
+    {
+       MoveEvent?.Invoke(context.ReadValue<Vector2>());
+    }
+
+    public void OnLook(InputAction.CallbackContext context)
+    {
+        LookEvent?.Invoke(context.ReadValue<Vector2>());
+    }
+
+    public void OnSelect(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+            SelectEvent?.Invoke();
+
+        if (context.phase == InputActionPhase.Canceled)
+            SelectCanceledEvent?.Invoke();
+    }
+
+    public void OnPointerPosition(InputAction.CallbackContext context)
+    {
+        PointerPositionEvent?.Invoke(context.ReadValue<Vector2>());
+    }
+
+    public void OnCommand(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+            CommandEvent?.Invoke();
+    }
+
+    public void OnMenuPause(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Performed)
+            MenuPauseEvent?.Invoke();
+    }
+}

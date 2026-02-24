@@ -37,4 +37,18 @@ public class Health : MonoBehaviour, IDamageable
         Destroy(gameObject);
     }
 
+    //[ContextMenu("Test: Recibir 10 de Daño")]
+    //public void TestDamage10() // prueba de daño de 10 puntos
+    //{
+    //    TakeDamage(10);
+    //    Debug.Log($"Prueba: Daño recibido. Vida actual: {currentHealth}");
+    //}
+
+    //[ContextMenu("Test: Matar Unidad")]
+    //public void TestKill()
+    //{
+    //    TakeDamage(maxHealth); // prueba de daño suficiente para matar a la unidad
+    //    Debug.Log("Prueba: Muerte forzada ejecutada.");
+    //}
+
 }
