@@ -92,13 +92,19 @@ public class SelectionManager : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundMask))
         {
             // verifico que el objeto seleccionado tenga el componente UnitMovement para emitir el comando de movimiento
-            if (currentSelection is MonoBehaviour selectedObject)
+            if (currentSelection is MonoBehaviour selectedObject && selectedObject.TryGetComponent<UnitMovement>(out UnitMovement movement))
             {
-                if (selectedObject.TryGetComponent<UnitMovement>(out UnitMovement movement))
+                // Verifico que el punto de destino esté en la NavMesh para evitar que las unidades intenten moverse a lugares no navegables
+                if (UnityEngine.AI.NavMesh.SamplePosition(hit.point, out UnityEngine.AI.NavMeshHit navHit, 2.0f, UnityEngine.AI.NavMesh.AllAreas))
                 {
                     movement.MoveTo(hit.point);
 
-                    Debug.DrawLine(mainCamera.transform.position, hit.point, Color.green, 2f); // Dibuja una línea verde desde la cámara hasta el punto de destino para visualizar el comando de movimiento
+                    Debug.DrawLine(mainCamera.transform.position, hit.point, Color.green, 2f); // donde hace click derecho el jugador
+
+                }
+                else
+                {
+                    Debug.DrawLine(mainCamera.transform.position, hit.point, Color.yellow, 2f); // punto de destino no navegable
                 }
             }
         }

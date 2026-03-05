@@ -20,4 +20,9 @@ public class UnitMovement : MonoBehaviour
 
         Debug.Log($"{name} se mueve a {destination}");
     }
+
+    public void Stop()
+    {
+        agent.isStopped = true;
+    }
 }
