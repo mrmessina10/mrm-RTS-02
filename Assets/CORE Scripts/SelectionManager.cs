@@ -9,6 +9,9 @@ public class SelectionManager : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private LayerMask selectionMask; // capa para raycast de selección
     [SerializeField] private LayerMask groundMask;
+    [SerializeField] private LayerMask interactablesMask;
+    [SerializeField] private LayerMask enemiesMask;
+
 
     private Vector2 currentMousePosition;
     private ISelectable currentSelection;
@@ -46,7 +49,6 @@ public class SelectionManager : MonoBehaviour
         // Realiza un raycast desde la posición del mouse para detectar objetos seleccionables
         Ray ray = mainCamera.ScreenPointToRay(currentMousePosition);
 
-        // DIBUJAR EL RAYO VISUALMENTE (Solo se ve en la ventana SCENE, no en Game)
         Debug.DrawRay(ray.origin, ray.direction * 100, Color.red, 2f);
 
         // Si el raycast golpea un objeto en la capa de selección, intenta obtener el componente ISelectable
@@ -59,7 +61,6 @@ public class SelectionManager : MonoBehaviour
                 {
                     currentSelection.OnDeselect();
                 }
-                else Debug.LogWarning($"Golpeé {hit.collider.name} pero NO TIENE el script UnitSelectionHandler o ISelectable.");
 
                 currentSelection = newSelection;
                 currentSelection.OnSelect();
@@ -82,30 +83,62 @@ public class SelectionManager : MonoBehaviour
 
     private void HandleMoveCommand()
     {
-        // Si no hay una selección actual, no se puede emitir un comando de movimiento
-        if (currentSelection == null)
-            return;
+        // 1. Verificaciones de Seguridad
+        if (currentSelection == null) return;
 
-        // Realiza un raycast desde la posición del mouse para detectar el punto en el suelo donde el jugador hace click derecho
+        // CORRECCIÓN: Primero verificamos si la selección es un objeto de Unity (MonoBehaviour)
+        // y si tiene el componente UnitController.
+        UnitController controller = null;
+
+        if (currentSelection is MonoBehaviour monoSelection)
+        {
+            monoSelection.TryGetComponent<UnitController>(out controller);
+        }
+
+        // Si no encontramos el controlador salimos.
+        if (controller == null) return;
+
+        // --- A PARTIR DE AQUÍ 'controller' YA EXISTE Y ES SEGURO USARLO ---
+
         Ray ray = mainCamera.ScreenPointToRay(currentMousePosition);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundMask))
+        // =================================================================================
+        // PRIORIDAD 1: ENEMIGOS (Combate)
+        // =================================================================================
+        if (Physics.Raycast(ray, out RaycastHit hitEnemy, Mathf.Infinity, enemiesMask))
         {
-            // verifico que el objeto seleccionado tenga el componente UnitMovement para emitir el comando de movimiento
-            if (currentSelection is MonoBehaviour selectedObject && selectedObject.TryGetComponent<UnitMovement>(out UnitMovement movement))
+            if (hitEnemy.collider.TryGetComponent<IInteractable>(out IInteractable target))
             {
-                // Verifico que el punto de destino esté en la NavMesh para evitar que las unidades intenten moverse a lugares no navegables
-                if (UnityEngine.AI.NavMesh.SamplePosition(hit.point, out UnityEngine.AI.NavMeshHit navHit, 2.0f, UnityEngine.AI.NavMesh.AllAreas))
-                {
-                    movement.MoveTo(hit.point);
+                Debug.Log($"<color=red>COMANDO DE ATAQUE:</color> {hitEnemy.collider.name}");
+                controller.SetTarget(target);
+                Debug.DrawLine(mainCamera.transform.position, hitEnemy.point, Color.red, 1f);
+                return;
+            }
+        }
 
-                    Debug.DrawLine(mainCamera.transform.position, hit.point, Color.green, 2f); // donde hace click derecho el jugador
+        // =================================================================================
+        // PRIORIDAD 2: INTERACTUABLES (Recolección / Construcción)
+        // =================================================================================
+        if (Physics.Raycast(ray, out RaycastHit hitInteractable, Mathf.Infinity, interactablesMask))
+        {
+            if (hitInteractable.collider.TryGetComponent<IInteractable>(out IInteractable target))
+            {
+                Debug.Log($"<color=yellow>COMANDO DE INTERACCIÓN:</color> {hitInteractable.collider.name}");
+                controller.SetTarget(target);
+                Debug.DrawLine(mainCamera.transform.position, hitInteractable.point, Color.yellow, 1f);
+                return;
+            }
+        }
 
-                }
-                else
-                {
-                    Debug.DrawLine(mainCamera.transform.position, hit.point, Color.yellow, 2f); // punto de destino no navegable
-                }
+        // =================================================================================
+        // PRIORIDAD 3: MOVIMIENTO (Suelo)
+        // =================================================================================
+        if (Physics.Raycast(ray, out RaycastHit hitGround, Mathf.Infinity, groundMask))
+        {
+            if (UnityEngine.AI.NavMesh.SamplePosition(hitGround.point, out UnityEngine.AI.NavMeshHit navHit, 2.0f, UnityEngine.AI.NavMesh.AllAreas))
+            {
+                controller.SetCommand(navHit.position);
+                Debug.DrawLine(mainCamera.transform.position, navHit.position, Color.green, 0.5f);
             }
         }
     }

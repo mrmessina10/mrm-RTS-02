@@ -1,6 +1,7 @@
+using System;
 using UnityEngine;
 
-public class EnemyUnit : MonoBehaviour, IInteractable, IDamageable
+public class EnemyUnit : MonoBehaviour, IInteractable
 {
     public InteractionType Type => InteractionType.Attack;
 
@@ -12,10 +13,5 @@ public class EnemyUnit : MonoBehaviour, IInteractable, IDamageable
     public void Interact (UnitController controller)
     {
         Debug.Log($"Enemy {name} is being attacked by {controller.name}");
-    }
-
-    public void TakeDamage(int damage)
-    {
-        throw new System.NotImplementedException();
     }
 }

@@ -18,11 +18,32 @@ public class Health : MonoBehaviour, IDamageable
         currentHealth = maxHealth;
     }
 
-    public void TakeDamage(int damage)
+    //public void TakeDamage(int damage)
+    //{
+    //    currentHealth -= damage;
+    //    currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+    //    onHealthChanged?.Invoke((float)currentHealth / maxHealth);
+    //    if (currentHealth <= 0)
+    //    {
+    //        Die();
+    //    }
+    //}
+
+
+    public void TakeDamage(DamageData damageData)
     {
+        int damage = damageData.BaseDamage;
+
+        //Groundwork para futuros cálculos de daño basado en tipo, resistencias, etc.
+
+        damage = Mathf.Max(damage, 1); // Asegura que el daño no sea menor a 1
+
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        Debug.Log($"{name} recibió {damage} de daño. Vida actual: {currentHealth}/{maxHealth}");
+
         onHealthChanged?.Invoke((float)currentHealth / maxHealth);
+
         if (currentHealth <= 0)
         {
             Die();
