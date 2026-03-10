@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class SelectionManager : MonoBehaviour
 {
@@ -14,12 +15,11 @@ public class SelectionManager : MonoBehaviour
 
 
     private Vector2 currentMousePosition;
-    private ISelectable currentSelection;
 
+    private List<ISelectable> selectedUnits = new List<ISelectable>();
     private void OnEnable()
     {
-        if (inputReader == null)
-            return;
+        if (inputReader == null) return;
 
         inputReader.PointerPositionEvent += HandlePointerPosition;
         inputReader.SelectEvent += HandleSelect;
@@ -43,102 +43,117 @@ public class SelectionManager : MonoBehaviour
 
     private void HandleSelect() // Método llamado cuando se detecta un evento de selección (clic izquierdo)
     {
+        bool isShiftHeld = inputReader.IsShiftHeld;
 
-        Debug.Log($"1. Input Recibido en pos: {currentMousePosition}");
-
-        // Realiza un raycast desde la posición del mouse para detectar objetos seleccionables
         Ray ray = mainCamera.ScreenPointToRay(currentMousePosition);
 
-        Debug.DrawRay(ray.origin, ray.direction * 100, Color.red, 2f);
-
-        // Si el raycast golpea un objeto en la capa de selección, intenta obtener el componente ISelectable
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, selectionMask))
         {
-            if (hit.collider.TryGetComponent<ISelectable>(out ISelectable newSelection)) // Si el objeto golpeado tiene un componente ISelectable, procede a seleccionar
+            if (hit.collider.TryGetComponent<ISelectable>(out ISelectable newSelection))
             {
-                Debug.Log("3. Componente ISelectable encontrado");
-                if (currentSelection != null && currentSelection != newSelection) // Si ya hay una selección actual y es diferente a la nueva selección, deselecciona la anterior
+                if (isShiftHeld)
                 {
-                    currentSelection.OnDeselect();
+                    // Si shift está apretado...
+                    if (selectedUnits.Contains(newSelection))
+                    {
+                        newSelection.OnDeselect();
+                        selectedUnits.Remove(newSelection); // ... y el objeto ya está seleccionado, lo deselecciono y lo saco de la lista
+                    }
+                    else
+                    {
+                        newSelection.OnSelect();
+                        selectedUnits.Add(newSelection); // ... y el objeto no está seleccionado, lo selecciono y lo agrego a la lista
+                    }
                 }
-
-                currentSelection = newSelection;
-                currentSelection.OnSelect();
+                else
+                {
+                    //click sin apretar shift limpia la seleccion y selecciona solo el nuevo objeto
+                    DeselectAll();
+                    newSelection.OnSelect();
+                    selectedUnits.Add(newSelection);
+                }
                 return;
             }
-            else Debug.Log("2. El Raycast no golpeó nada (Revisar Layers)");
         }
 
-        DeselectCurrent(); //Si el rayo pega en nada seleccionable como el suelo o el vacio, limpio la seleccion
-    }
-
-    private void DeselectCurrent()
-    {
-        if (currentSelection != null)
+        if (!isShiftHeld)
         {
-            currentSelection.OnDeselect();
-            currentSelection = null;
+            DeselectAll();
         }
+
     }
+
+    private void DeselectAll()
+    {
+        foreach (var unit in selectedUnits)
+        {
+            unit.OnDeselect();
+        }
+        selectedUnits.Clear();
+    }
+
+    // legacy (sin soporte para multi-selección)
+
+    //private void DeselectCurrent()
+    //{
+    //    if (currentSelection != null)
+    //    {
+    //        currentSelection.OnDeselect();
+    //        currentSelection = null;
+    //    }
+    //}
 
     private void HandleMoveCommand()
     {
-        // 1. Verificaciones de Seguridad
-        if (currentSelection == null) return;
-
-        // CORRECCIÓN: Primero verificamos si la selección es un objeto de Unity (MonoBehaviour)
-        // y si tiene el componente UnitController.
-        UnitController controller = null;
-
-        if (currentSelection is MonoBehaviour monoSelection)
-        {
-            monoSelection.TryGetComponent<UnitController>(out controller);
-        }
-
-        // Si no encontramos el controlador salimos.
-        if (controller == null) return;
-
-        // --- A PARTIR DE AQUÍ 'controller' YA EXISTE Y ES SEGURO USARLO ---
+        // si no hay unidades seleccionadas, no hacemos nada
+        if (selectedUnits.Count == 0) return;
 
         Ray ray = mainCamera.ScreenPointToRay(currentMousePosition);
 
-        // =================================================================================
-        // PRIORIDAD 1: ENEMIGOS (Combate)
-        // =================================================================================
+        // PRIORIDAD 1: Combate
         if (Physics.Raycast(ray, out RaycastHit hitEnemy, Mathf.Infinity, enemiesMask))
         {
             if (hitEnemy.collider.TryGetComponent<IInteractable>(out IInteractable target))
             {
-                Debug.Log($"<color=red>COMANDO DE ATAQUE:</color> {hitEnemy.collider.name}");
-                controller.SetTarget(target);
+                // Usamos el método auxiliar para no repetir el foreach 3 veces
+                ExecuteCommandOnSelected(controller => controller.SetTarget(target));
                 Debug.DrawLine(mainCamera.transform.position, hitEnemy.point, Color.red, 1f);
                 return;
             }
         }
 
-        // =================================================================================
-        // PRIORIDAD 2: INTERACTUABLES (Recolección / Construcción)
-        // =================================================================================
+        // PRIORIDAD 2: Interactuables
         if (Physics.Raycast(ray, out RaycastHit hitInteractable, Mathf.Infinity, interactablesMask))
         {
             if (hitInteractable.collider.TryGetComponent<IInteractable>(out IInteractable target))
             {
-                Debug.Log($"<color=yellow>COMANDO DE INTERACCIÓN:</color> {hitInteractable.collider.name}");
-                controller.SetTarget(target);
+                ExecuteCommandOnSelected(controller => controller.SetTarget(target));
                 Debug.DrawLine(mainCamera.transform.position, hitInteractable.point, Color.yellow, 1f);
                 return;
             }
         }
 
-        // =================================================================================
-        // PRIORIDAD 3: MOVIMIENTO (Suelo)
-        // =================================================================================
+        // PRIORIDAD 3: Movimiento
         if (Physics.Raycast(ray, out RaycastHit hitGround, Mathf.Infinity, groundMask))
         {
             if (UnityEngine.AI.NavMesh.SamplePosition(hitGround.point, out UnityEngine.AI.NavMeshHit navHit, 2.0f, UnityEngine.AI.NavMesh.AllAreas))
             {
-                controller.SetCommand(navHit.position);
+                ExecuteCommandOnSelected(controller => controller.SetCommand(navHit.position));
                 Debug.DrawLine(mainCamera.transform.position, navHit.position, Color.green, 0.5f);
+            }
+        }
+    }
+    
+
+        // --- MÉTODO AUXILIAR PARA COMANDOS EN GRUPO ---
+        // Recorre la lista, filtra los que tengan UnitController y les pasa la orden.
+    private void ExecuteCommandOnSelected(System.Action<UnitController> commandAction)
+    {
+        foreach (var selection in selectedUnits)
+        {
+            if (selection is MonoBehaviour monoSelection && monoSelection.TryGetComponent<UnitController>(out UnitController controller))
+            {
+                commandAction(controller);
             }
         }
     }

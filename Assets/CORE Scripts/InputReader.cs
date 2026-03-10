@@ -17,6 +17,9 @@ public class InputReader : ScriptableObject, GameInput.IPlayerActions
     public event UnityAction SelectCanceledEvent; // left click released for box selection
     public event UnityAction CommandEvent; // right click
     public event UnityAction MenuPauseEvent; // Pause key
+    public event UnityAction ShiftKeyEvent; // Shift key for multi-selection
+
+    public bool IsShiftHeld { get; private set; } // Propiedad para verificar si Shift está presionado
 
     private GameInput gameInput;
 
@@ -82,14 +85,19 @@ public class InputReader : ScriptableObject, GameInput.IPlayerActions
 
     public void OnRotateCamera(InputAction.CallbackContext context)
     {
-       if (context.phase == InputActionPhase.Performed)
+        if (context.phase == InputActionPhase.Performed)
             RotateCameraEvent?.Invoke(true);
-       else if (context.phase == InputActionPhase.Canceled)
+        else if (context.phase == InputActionPhase.Canceled)
             RotateCameraEvent?.Invoke(false);
     }
 
     public void OnCameraZoom(InputAction.CallbackContext context)
     {
         CameraZoomEvent?.Invoke(context.ReadValue<float>());
+    }
+
+    public void OnShiftKey(InputAction.CallbackContext context)
+    {
+        IsShiftHeld = context.ReadValueAsButton(); // Actualiza el estado de Shift cada vez que se presiona o suelta
     }
 }
