@@ -20,6 +20,7 @@ public class InputReader : ScriptableObject, GameInput.IPlayerActions
     public event UnityAction ShiftKeyEvent; // Shift key for multi-selection
 
     public bool IsShiftHeld { get; private set; } // Propiedad para verificar si Shift está presionado
+    public bool IsLeftClickHeld { get; set; } // Propiedad para verificar si el clic izquierdo está presionado (para selección con caja)
 
     private GameInput gameInput;
 
@@ -59,11 +60,12 @@ public class InputReader : ScriptableObject, GameInput.IPlayerActions
 
     public void OnSelect(InputAction.CallbackContext context)
     {
-        if (context.phase == InputActionPhase.Performed)
-            SelectEvent?.Invoke();
+        IsLeftClickHeld = context.ReadValueAsButton(); // Actualiza el estado del clic izquierdo cada vez que se presiona o suelta
 
-        if (context.phase == InputActionPhase.Canceled)
-            SelectCanceledEvent?.Invoke();
+        if (context.started || context.canceled)
+        {
+            SelectEvent?.Invoke();
+        }
     }
 
     public void OnPointerPosition(InputAction.CallbackContext context)
