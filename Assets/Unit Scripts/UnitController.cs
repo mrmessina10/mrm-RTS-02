@@ -3,121 +3,89 @@ using UnityEngine;
 [RequireComponent(typeof(UnitMovement))]
 public class UnitController : MonoBehaviour
 {
-    [Header("Interaction Settings")]
+    [Header("Settings")]
     [SerializeField] private float interactionRange = 2f;
 
     [Header("Combat Settings")]
-    [SerializeField] private float attackRate = 1f; // Frecuencia de ataque (1f = 1 ataque por segundo) + alto es + lento
-    [SerializeField] private int attackDamage = 10;
-    [SerializeField] private DamageType attackType = DamageType.Default; // Tipo de daño para futuras implementaciones de resistencias
+    [SerializeField] private float attackRate = 1.0f;
+    [SerializeField] private int attackDamage = 15;
+    [SerializeField] private DamageType attackType = DamageType.Melee;
 
-    private float attackCooldown = 0f; // Temporizador para controlar la frecuencia de ataque
+    [Header("Vision & Aggro Settings")]
+    [SerializeField] private float visionRange = 7f; // Rango visual para detectar enemigos
+    [SerializeField] private LayerMask enemyMask;
 
-    private UnitMovement movement;
+    // --- PROPIEDADES PÚBLICAS PARA LAS STATE MACHINES ---
+    public UnitMovement Movement { get; private set; }
+    public float InteractionRange => interactionRange;
+    public float AttackRate => attackRate;
+    public int AttackDamage => attackDamage;
+    public DamageType AttackType => attackType;
+    public float VisionRange => visionRange;
+    public LayerMask EnemyMask => enemyMask;
+
+    // La Máquina de Estados
+    private StateMachine stateMachine;
+
+    /* --- LEGACY VARIABLES ---
     private IInteractable currentTarget;
+    private float attackCooldown = 0f;
+    */
 
     private void Awake()
     {
-        movement = GetComponent<UnitMovement>();
+        Movement = GetComponent<UnitMovement>();
+        stateMachine = new StateMachine();
+    }
 
+    private void Start()
+    {
+        // Estado inicial por defecto
+        ChangeState(new UnitIdleState(this));
     }
 
     private void Update()
     {
-        // Cast to MonoBehaviour to force Unity's overloaded null check 
-        // which correctly detects if the underlying GameObject was destroyed.
-        if (currentTarget == null || (currentTarget as MonoBehaviour) == null)
-        {
-            // If the target was destroyed, clear the reference and stop the unit.
-            if (currentTarget != null)
-            {
-                currentTarget = null;
-                movement.Stop();
-                Debug.Log($"{name}: Target destroyed. Stopping action.");
-            }
-            return;
-        }
+        // Delega la ejecución frame a frame al estado actual
+        stateMachine.Update();
 
-        float targetRadius = 0.5f; // Radio de colisión del objetivo (ajusta según el tamaño del objetivo)
+        /* --- LEGACY UPDATE LOGIC ---
+        (Toda la lógica de movimiento, rangos y ataque ahora está en UnitAttackState y UnitMoveState)
+        */
+    }
 
-        float distanceSqr = (transform.position - currentTarget.GetTransform().position).sqrMagnitude;
-        float interactionRangeSqr = interactionRange * interactionRange;
-        // La distancia real de parada es: Mi Rango + Radio del Enemigo
-        float effectiveRange = interactionRange + targetRadius;
+    // --- API PARA COMANDOS EXTERNOS (SelectionManager) ---
 
-        if (currentTarget.GetTransform().TryGetComponent<Collider>(out Collider col))
-        {
-            // evito que se solapen las unidades
-            targetRadius = Mathf.Max(col.bounds.extents.x, col.bounds.extents.z);
-        }
-
-        if (distanceSqr > effectiveRange * effectiveRange)
-        {
-            // lejos -> moverse
-            movement.MoveTo(currentTarget.GetTransform().position);
-        }
-        else
-        {
-            movement.Stop();
-            RotateTowards(currentTarget.GetTransform());
-        }
-
-        if (Time.time >= attackCooldown)
-        {
-            // Buscamos si el objetivo tiene vida y puede recibir daño
-            if (currentTarget.GetTransform().TryGetComponent<IDamageable>(out IDamageable damageableTarget))
-            {
-                /* --- LEGACY ---
-                targetDamageable.TakeDamage(attackDamage); // Error: enviaba un int
-                */
-
-                // 1. Creamos el paquete de datos de daño con toda la información relevante
-                DamageData payload = new DamageData
-                {
-                    BaseDamage = attackDamage,
-                    Type = attackType,
-                    SourcePosition = transform.position
-                };
-
-                // 2. Enviamos el paquete completo
-                damageableTarget.TakeDamage(payload);
-            }
-            else
-            {
-                currentTarget.Interact(this);
-            }
-
-            attackCooldown = Time.time + attackRate;
-        }
+    public void ChangeState(IState newState)
+    {
+        stateMachine.ChangeState(newState);
     }
 
     public void SetCommand(Vector3 destination)
     {
-        currentTarget = null; // Limpiar el objetivo actual al recibir un comando de movimiento
-        movement.MoveTo(destination);
+        /* --- LEGACY ---
+        currentTarget = null; 
+        Movement.MoveTo(destination);
+        */
+        ChangeState(new UnitMoveState(this, destination));
     }
 
     public void SetTarget(IInteractable newTarget)
     {
+        /* --- LEGACY ---
         currentTarget = newTarget;
-    }
-
-    private void RotateTowards(Transform target)
-    {
-        Vector3 direction = (target.position - transform.position).normalized;
-        direction.y = 0; // Mantener la rotación solo en el plano horizontal
-        if (direction.sqrMagnitude > 0.01f) // Evitar rotar si la dirección es muy pequeña
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f); // Ajusta la velocidad de rotación según sea necesario
-        }
+        */
+        ChangeState(new UnitAttackState(this, newTarget));
     }
 
     private void OnDrawGizmosSelected()
     {
-        // Dibuja un círculo para visualizar el rango de interacción en la escena
-        Gizmos.color = Color.yellow;
+        // Círculo Rojo: Rango de Ataque / Interacción
+        Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, interactionRange);
 
+        // Círculo Amarillo: Rango de Visión
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, visionRange);
     }
 }

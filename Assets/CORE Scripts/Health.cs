@@ -40,7 +40,7 @@ public class Health : MonoBehaviour, IDamageable
 
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-        Debug.Log($"{name} recibió {damage} de daño. Vida actual: {currentHealth}/{maxHealth}");
+        Debug.Log($"{name} recibió {damage} de daño {damageData.Type}. Vida actual: {currentHealth}/{maxHealth}");
 
         onHealthChanged?.Invoke((float)currentHealth / maxHealth);
 

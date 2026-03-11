@@ -5,24 +5,26 @@ using UnityEngine.AI;
 public class UnitMovement : MonoBehaviour
 {
     private NavMeshAgent agent;
-    private Camera mainCamera;
 
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
     }
 
+    // Método que llama el UnitMoveState
     public void MoveTo(Vector3 destination)
     {
-        //Cancelo cualquier ruta anterior
         agent.isStopped = false;
         agent.SetDestination(destination);
-
-        Debug.Log($"{name} se mueve a {destination}");
     }
 
+    // Método que llama el UnitIdleState o cuando llega a rango de ataque
     public void Stop()
     {
-        agent.isStopped = true;
+        if (agent.isOnNavMesh)
+        {
+            agent.isStopped = true;
+            agent.ResetPath();
+        }
     }
 }
