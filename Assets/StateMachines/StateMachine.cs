@@ -4,6 +4,7 @@ using UnityEngine.InputSystem.XR.Haptics;
 public class StateMachine
 {
     private IState currentState;
+    public IState CurrentState => currentState;
     public void ChangeState(IState newState)
     {
         if (currentState != null)

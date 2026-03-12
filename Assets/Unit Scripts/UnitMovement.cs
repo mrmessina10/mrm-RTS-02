@@ -6,6 +6,11 @@ public class UnitMovement : MonoBehaviour
 {
     private NavMeshAgent agent;
 
+    public bool IsPathPending => agent.pathPending;
+    public float RemainingDistance => agent.remainingDistance;
+    public float StoppingDistance => agent.stoppingDistance;
+    public float VelocitySqr => agent.velocity.sqrMagnitude;
+
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();

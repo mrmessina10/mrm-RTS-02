@@ -1,12 +1,12 @@
 using UnityEngine;
 
-public class UnitAttackState : IState
+public class MeleeAttackState : IState
 {
     private UnitController unit;
     private IInteractable target;
     private float attackCooldown;
 
-    public UnitAttackState(UnitController unit, IInteractable target)
+    public MeleeAttackState(UnitController unit, IInteractable target)
     {
         this.unit = unit;
         this.target = target;
@@ -41,10 +41,23 @@ public class UnitAttackState : IState
         if (distanceSqr > effectiveRange * effectiveRange)
         {
             unit.Movement.MoveTo(target.GetTransform().position);
+
+            // ACTIVAR ANIMACIÓN: Persecución
+            if (unit.UnitAnimator != null)
+            {
+                unit.UnitAnimator.SetBool("IsMoving", true);
+            }
         }
         else
         {
             unit.Movement.Stop();
+
+            // DESACTIVAR ANIMACIÓN: Llegó a rango
+            if (unit.UnitAnimator != null)
+            {
+                unit.UnitAnimator.SetBool("IsMoving", false);
+            }
+
             RotateTowards(target.GetTransform());
 
             if (Time.time >= attackCooldown)
@@ -57,13 +70,31 @@ public class UnitAttackState : IState
 
     public void Exit()
     {
+        // SEGURIDAD: Previene que la animación se trabe si se interrumpe el estado
+        if (unit.UnitAnimator != null)
+        {
+            unit.UnitAnimator.SetBool("IsMoving", false);
+        }
     }
 
     // Métodos auxiliares mudados desde el UnitController
     private void ExecuteAttack()
     {
+        if (unit.UnitAnimator != null)
+        {
+            unit.UnitAnimator.SetTrigger("Attack");
+        }
+    }
+
+    public void ApplyDamage()
+    {
+        Debug.Log("Eslabón 3: AttackState procesando el daño.");
+
+        if (target == null || (target as MonoBehaviour) == null) return;
+
         if (target.GetTransform().TryGetComponent<IDamageable>(out IDamageable targetDamageable))
         {
+            Debug.Log("Eslabón 4: ¡Daño enviado al enemigo con éxito!");
             DamageData payload = new DamageData
             {
                 BaseDamage = unit.AttackDamage,
