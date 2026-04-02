@@ -22,14 +22,14 @@ El foco de este desarrollo está en escribir código modular y mantenible. Los s
 ## Estructura del Proyecto
 
 Todo el código fuente y la lógica desarrollada para este prototipo se encuentra centralizada y organizada en la carpeta principal:
-*   `Assets/_Scripts/`: Contiene todos los scripts en C#, divididos por responsabilidad (Core, Units, Combat, UI).
+*   `Assets/_Scripts/`: Contiene todos los scripts en C#, divididos por responsabilidad.
 
 ## Tecnologías Utilizadas
-*   **Motor:** Unity [**INSERTA TU VERSIÓN AQUÍ**, ej: 2022.3 LTS]
+*   **Motor:** Unity 6.3 LTS (6000.3.9f1)
 *   **Lenguaje:** C#
 
 ## Estado Actual y Próximos Pasos
 El proyecto se encuentra en etapa de desarrollo activo. Los próximos hitos técnicos y de diseño incluyen:
-- [ ] **Sistema de Economía y Recursos:** Desarrollo de la arquitectura subyacente para la recolección, almacenamiento y consumo de recursos, estableciendo el *game loop* central del RTS.
-- [ ] Refactorización y optimización del sistema de búsqueda de objetivos (Targeting).
-- [ ] Explorar la migración progresiva de estos conceptos arquitectónicos hacia Unreal Engine.
+- Sistema de Economía y Recursos: Desarrollo de la arquitectura subyacente para la recolección, almacenamiento y consumo de recursos, estableciendo el *game loop* central del RTS.
+- Refactorización y optimización del sistema de búsqueda de objetivos (Targeting).
+- Explorar la migración progresiva de estos conceptos arquitectónicos hacia Unreal Engine.
