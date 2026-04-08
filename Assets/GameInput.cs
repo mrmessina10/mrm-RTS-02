@@ -172,6 +172,24 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CtrlKey"",
+                    ""type"": ""Button"",
+                    ""id"": ""79d34608-4312-45bc-8233-40c08a9943dc"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""NumberKey"",
+                    ""type"": ""Button"",
+                    ""id"": ""c506ca81-03a7-4918-8491-45e797fc1a91"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -414,6 +432,116 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""ShiftKey"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5448ef32-995f-453e-8788-e9469b7aa5fe"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""CtrlKey"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0beac079-179c-45c1-adb2-897a6c270f8e"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NumberKey"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6ecf7e60-f63b-4b55-81d2-ec9d18fb9094"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NumberKey"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0e096a51-d593-4cee-962f-9dba46d64eb1"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NumberKey"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""236fd02e-8161-4c35-a6ba-7f6652ca04bd"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NumberKey"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""78f5ffa7-c158-4b33-9721-4aa967aafa0c"",
+                    ""path"": ""<Keyboard>/5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NumberKey"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""203869a7-aadd-4f41-b0c1-5d3b5b97a800"",
+                    ""path"": ""<Keyboard>/6"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NumberKey"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c0fa3b2e-9913-44dd-94fd-bbec38f324bc"",
+                    ""path"": ""<Keyboard>/7"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NumberKey"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b8b71325-e150-42f8-a1c7-88f4364d4e34"",
+                    ""path"": ""<Keyboard>/8"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NumberKey"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""291171f2-467c-4e57-82b7-bcc7ecb3fe15"",
+                    ""path"": ""<Keyboard>/9"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NumberKey"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1010,6 +1138,8 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         m_Player_RotateCamera = m_Player.FindAction("RotateCamera", throwIfNotFound: true);
         m_Player_CameraZoom = m_Player.FindAction("Camera Zoom", throwIfNotFound: true);
         m_Player_ShiftKey = m_Player.FindAction("ShiftKey", throwIfNotFound: true);
+        m_Player_CtrlKey = m_Player.FindAction("CtrlKey", throwIfNotFound: true);
+        m_Player_NumberKey = m_Player.FindAction("NumberKey", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1112,6 +1242,8 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_RotateCamera;
     private readonly InputAction m_Player_CameraZoom;
     private readonly InputAction m_Player_ShiftKey;
+    private readonly InputAction m_Player_CtrlKey;
+    private readonly InputAction m_Player_NumberKey;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1159,6 +1291,14 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/ShiftKey".
         /// </summary>
         public InputAction @ShiftKey => m_Wrapper.m_Player_ShiftKey;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/CtrlKey".
+        /// </summary>
+        public InputAction @CtrlKey => m_Wrapper.m_Player_CtrlKey;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/NumberKey".
+        /// </summary>
+        public InputAction @NumberKey => m_Wrapper.m_Player_NumberKey;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1212,6 +1352,12 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @ShiftKey.started += instance.OnShiftKey;
             @ShiftKey.performed += instance.OnShiftKey;
             @ShiftKey.canceled += instance.OnShiftKey;
+            @CtrlKey.started += instance.OnCtrlKey;
+            @CtrlKey.performed += instance.OnCtrlKey;
+            @CtrlKey.canceled += instance.OnCtrlKey;
+            @NumberKey.started += instance.OnNumberKey;
+            @NumberKey.performed += instance.OnNumberKey;
+            @NumberKey.canceled += instance.OnNumberKey;
         }
 
         /// <summary>
@@ -1250,6 +1396,12 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @ShiftKey.started -= instance.OnShiftKey;
             @ShiftKey.performed -= instance.OnShiftKey;
             @ShiftKey.canceled -= instance.OnShiftKey;
+            @CtrlKey.started -= instance.OnCtrlKey;
+            @CtrlKey.performed -= instance.OnCtrlKey;
+            @CtrlKey.canceled -= instance.OnCtrlKey;
+            @NumberKey.started -= instance.OnNumberKey;
+            @NumberKey.performed -= instance.OnNumberKey;
+            @NumberKey.canceled -= instance.OnNumberKey;
         }
 
         /// <summary>
@@ -1613,6 +1765,20 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnShiftKey(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "CtrlKey" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnCtrlKey(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "NumberKey" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnNumberKey(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

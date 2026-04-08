@@ -13,7 +13,7 @@ public class AnimationEventRelay : MonoBehaviour
     // Este es el método exacto que llamará la línea de tiempo de la animación
     public void OnAttackImpact()
     {
-        Debug.Log("Eslabón 1: ¡El Evento de Animación se disparó!"); // Si no sale esto, el evento está mal configurado.
+       // Debug.Log("Eslabón 1: ¡El Evento de Animación se disparó!"); // Si no sale esto, el evento está mal configurado.
 
         if (unitController != null)
         {

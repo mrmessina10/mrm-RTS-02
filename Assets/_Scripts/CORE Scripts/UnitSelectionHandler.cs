@@ -51,13 +51,13 @@ public class UnitSelectionHandler : MonoBehaviour, ISelectable
     // --- INTERFAZ ISelectable ---
     public void OnSelect()
     {
-        Debug.Log($"Unidad {name} Seleccionada");
+        //Debug.Log($"Unidad {name} Seleccionada");
         if (selectionRing != null) selectionRing.SetActive(true);
     }
 
     public void OnDeselect()
     {
-        Debug.Log($"Unidad {name} Deseleccionada");
+        //Debug.Log($"Unidad {name} Deseleccionada");
         if (selectionRing != null) selectionRing.SetActive(false);
     }
 }

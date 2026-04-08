@@ -21,6 +21,12 @@ public class SelectionManager : MonoBehaviour
     [SerializeField] private float doubleClickThreshold = 0.3f; // tiempo máximo entre clicks para considerar un doble click
     private float lastClickTime = 0f;
 
+    [Header("Control Groups")]
+    private Dictionary<int, List<ISelectable>> controlGroups = new Dictionary<int, List<ISelectable>>(); // Diccionario para almacenar grupos de control (1-9)
+
+    [Header("Formation Settings")]
+    [SerializeField] private float formationSpacing = 1.5f; // Distancia entre unidades
+
     private Vector2 currentMousePosition;
     private Vector2 startMousePosition;
 
@@ -35,6 +41,9 @@ public class SelectionManager : MonoBehaviour
         inputReader.PointerPositionEvent += HandlePointerPosition;
         inputReader.SelectEvent += HandleSelect;
         inputReader.CommandEvent += HandleMoveCommand;
+
+        inputReader.AssignGroupEvent += AssignControlGroup;
+        inputReader.SelectGroupEvent += SelectControlGroup;
     }
 
     private void OnDisable()
@@ -45,6 +54,9 @@ public class SelectionManager : MonoBehaviour
         inputReader.PointerPositionEvent -= HandlePointerPosition;
         inputReader.SelectEvent -= HandleSelect;
         inputReader.CommandEvent -= HandleMoveCommand;
+
+        inputReader.AssignGroupEvent -= AssignControlGroup;
+        inputReader.SelectGroupEvent -= SelectControlGroup;
     }
 
     private void HandlePointerPosition(Vector2 position) // actualizo la posicion del mouse constantemente
@@ -223,6 +235,7 @@ public class SelectionManager : MonoBehaviour
 
         Ray ray = mainCamera.ScreenPointToRay(currentMousePosition);
 
+        // 1. Raycast a Enemigos
         if (Physics.Raycast(ray, out RaycastHit hitEnemy, Mathf.Infinity, enemiesMask))
         {
             if (hitEnemy.collider.TryGetComponent<IInteractable>(out IInteractable target))
@@ -233,6 +246,7 @@ public class SelectionManager : MonoBehaviour
             }
         }
 
+        // 2. Raycast a Interactuables (Recursos, edificios, etc)
         if (Physics.Raycast(ray, out RaycastHit hitInteractable, Mathf.Infinity, interactablesMask))
         {
             if (hitInteractable.collider.TryGetComponent<IInteractable>(out IInteractable target))
@@ -243,14 +257,67 @@ public class SelectionManager : MonoBehaviour
             }
         }
 
+        // 3. Raycast al Suelo (Movimiento en Grilla con Rotación)
         if (Physics.Raycast(ray, out RaycastHit hitGround, Mathf.Infinity, groundMask))
         {
             if (UnityEngine.AI.NavMesh.SamplePosition(hitGround.point, out UnityEngine.AI.NavMeshHit navHit, 2.0f, UnityEngine.AI.NavMesh.AllAreas))
             {
-                ExecuteCommandOnSelected(controller => controller.SetCommand(navHit.position));
-                Debug.DrawLine(mainCamera.transform.position, navHit.position, Color.green, 0.5f);
+                List<UnitController> controllers = new List<UnitController>();
+                Vector3 currentUnitsCenter = Vector3.zero;
+
+                // Extraemos los controladores y sumamos sus posiciones para promediar
+                foreach (var selection in selectedUnits)
+                {
+                    if (selection is MonoBehaviour mono && mono.TryGetComponent<UnitController>(out UnitController controller))
+                    {
+                        controllers.Add(controller);
+                        currentUnitsCenter += controller.transform.position;
+                    }
+                }
+
+                if (controllers.Count > 0)
+                {
+                    currentUnitsCenter /= controllers.Count; // Promedio = Centro de gravedad del grupo
+
+                    List<Vector3> formationPositions = CalculateFormationPositions(navHit.position, currentUnitsCenter, controllers.Count, formationSpacing);
+
+                    for (int i = 0; i < controllers.Count; i++)
+                    {
+                        controllers[i].SetCommand(formationPositions[i]);
+                        Debug.DrawLine(mainCamera.transform.position, formationPositions[i], Color.green, 0.5f);
+                    }
+                }
             }
         }
+
+        //if (Physics.Raycast(ray, out RaycastHit hitEnemy, Mathf.Infinity, enemiesMask))
+        //{
+        //    if (hitEnemy.collider.TryGetComponent<IInteractable>(out IInteractable target))
+        //    {
+        //        ExecuteCommandOnSelected(controller => controller.SetTarget(target));
+        //        Debug.DrawLine(mainCamera.transform.position, hitEnemy.point, Color.red, 1f);
+        //        return;
+        //    }
+        //}
+
+        //if (Physics.Raycast(ray, out RaycastHit hitInteractable, Mathf.Infinity, interactablesMask))
+        //{
+        //    if (hitInteractable.collider.TryGetComponent<IInteractable>(out IInteractable target))
+        //    {
+        //        ExecuteCommandOnSelected(controller => controller.SetTarget(target));
+        //        Debug.DrawLine(mainCamera.transform.position, hitInteractable.point, Color.yellow, 1f);
+        //        return;
+        //    }
+        //}
+
+        //if (Physics.Raycast(ray, out RaycastHit hitGround, Mathf.Infinity, groundMask))
+        //{
+        //    if (UnityEngine.AI.NavMesh.SamplePosition(hitGround.point, out UnityEngine.AI.NavMeshHit navHit, 2.0f, UnityEngine.AI.NavMesh.AllAreas))
+        //    {
+        //        ExecuteCommandOnSelected(controller => controller.SetCommand(navHit.position));
+        //        Debug.DrawLine(mainCamera.transform.position, navHit.position, Color.green, 0.5f);
+        //    }
+        //}
     }
 
     private void ExecuteCommandOnSelected(System.Action<UnitController> commandAction)
@@ -262,5 +329,83 @@ public class SelectionManager : MonoBehaviour
                 commandAction(controller);
             }
         }
+    }
+
+    private void AssignControlGroup(int groupIndex)
+    {
+        if (selectedUnits.Count == 0)
+        {
+            //     Debug.LogWarning($"[SelectionManager] Intento de guardar Grupo {groupIndex}, pero no hay unidades seleccionadas.");
+            return;
+        }
+
+        selectedUnits.RemoveAll(unit => unit == null || (unit as MonoBehaviour) == null);
+        controlGroups[groupIndex] = new List<ISelectable>(selectedUnits);
+
+        // Debug.Log($"<color=green>[SelectionManager] Grupo {groupIndex} GUARDADO con {controlGroups[groupIndex].Count} unidades.</color>");
+    }
+
+    private void SelectControlGroup(int groupIndex)
+    {
+        if (controlGroups.TryGetValue(groupIndex, out List<ISelectable> group))
+        {
+            DeselectAll();
+            group.RemoveAll(unit => unit == null || (unit as MonoBehaviour) == null);
+
+            //Debug.Log($"<color=cyan>[SelectionManager] Grupo {groupIndex} CARGADO con {group.Count} unidades.</color>");
+
+            foreach (var unit in group)
+            {
+                unit.OnSelect();
+                selectedUnits.Add(unit);
+            }
+        }
+        //else
+        //{
+        //    Debug.LogWarning($"[SelectionManager] El grupo {groupIndex} está vacío o no existe en el diccionario.");
+        //}
+    }
+
+    private List<Vector3> CalculateFormationPositions(Vector3 targetCenter, Vector3 currentCenter, int unitCount, float spacing)
+    {
+        List<Vector3> positions = new List<Vector3>();
+        if (unitCount == 0) return positions;
+
+        // 1. Calculamos la dirección hacia la que van a caminar
+        Vector3 moveDirection = (targetCenter - currentCenter).normalized;
+        if (moveDirection == Vector3.zero) moveDirection = Vector3.forward; // Fallback
+
+        // 2. Creamos una rotación basada en esa dirección
+        Quaternion rotation = Quaternion.LookRotation(moveDirection);
+
+        int columns = Mathf.CeilToInt(Mathf.Sqrt(unitCount));
+        int rows = Mathf.CeilToInt((float)unitCount / columns);
+
+        for (int i = 0; i < unitCount; i++)
+        {
+            int row = i / columns;
+            int col = i % columns;
+
+            float xOffset = (col - (columns - 1) / 2f) * spacing;
+            // Invertimos la lógica del Z para que la Fila 0 (row=0) tenga el Z positivo (Frente)
+            float zOffset = ((rows - 1) / 2f - row) * spacing;
+
+            Vector3 localOffset = new Vector3(xOffset, 0f, zOffset);
+
+            // 3. Multiplicamos la rotación por el offset local para girar la grilla
+            Vector3 worldOffset = rotation * localOffset;
+            Vector3 gridPosition = targetCenter + worldOffset;
+
+            if (UnityEngine.AI.NavMesh.SamplePosition(gridPosition, out UnityEngine.AI.NavMeshHit hit, spacing * 2f, UnityEngine.AI.NavMesh.AllAreas))
+            {
+                positions.Add(hit.position);
+            }
+            else
+            {
+                positions.Add(targetCenter);
+            }
+        }
+
+        return positions;
     }
 }

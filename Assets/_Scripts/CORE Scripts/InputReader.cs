@@ -17,8 +17,10 @@ public class InputReader : ScriptableObject, GameInput.IPlayerActions
     public event UnityAction SelectCanceledEvent; // left click released for box selection
     public event UnityAction CommandEvent; // right click
     public event UnityAction MenuPauseEvent; // Pause key
-    public event UnityAction ShiftKeyEvent; // Shift key for multi-selection
+    //public event UnityAction ShiftKeyEvent; // Shift key for multi-selection
 
+    [Header("Modifiers")]
+    public bool IsCtrlHeld { get; private set; } // Propiedad para verificar si Ctrl está presionado
     public bool IsShiftHeld { get; private set; } // Propiedad para verificar si Shift está presionado
     public bool IsLeftClickHeld { get; set; } // Propiedad para verificar si el clic izquierdo está presionado (para selección con caja)
 
@@ -43,6 +45,10 @@ public class InputReader : ScriptableObject, GameInput.IPlayerActions
         }
 
     }
+
+    public event System.Action<int> AssignGroupEvent;
+
+    public event System.Action<int> SelectGroupEvent;
 
     //=======================================================
     //  Implementacion de interfaz GameInput.IPlayerActions
@@ -101,5 +107,58 @@ public class InputReader : ScriptableObject, GameInput.IPlayerActions
     public void OnShiftKey(InputAction.CallbackContext context)
     {
         IsShiftHeld = context.ReadValueAsButton(); // Actualiza el estado de Shift cada vez que se presiona o suelta
+    }
+
+    public void OnCtrlKey(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            IsCtrlHeld = true;
+        }
+        else if (context.canceled)
+        {
+            IsCtrlHeld = false;
+        }
+
+        Debug.Log($"[InputReader] Estado del Ctrl: {IsCtrlHeld} | Fase: {context.phase}");
+    }
+
+    public void OnNumberKey(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            // Limpiamos el string por si acaso el jugador presiona el numpad
+            string cleanKeyName = context.control.name.Replace("numpad", "");
+
+            if (int.TryParse(cleanKeyName, out int groupNumber))
+            {
+                // ===============================================================================================
+                // MODO TESTEO EN EDITOR (Usa SHIFT para evitar conflictos con atajos nativos del editor de Unity)
+                // ===============================================================================================
+                if (IsShiftHeld)
+                {
+                    AssignGroupEvent?.Invoke(groupNumber);
+                }
+                else
+                {
+                    SelectGroupEvent?.Invoke(groupNumber);
+                }
+
+                /*
+                // ================================================================================================
+                // MODO BUILD FINAL (Usa CTRL)
+                // Descomentar esto y comentar el de arriba antes de buildear
+                // ================================================================================================
+                if (IsCtrlHeld)
+                {
+                    AssignGroupEvent?.Invoke(groupNumber);
+                }
+                else
+                {
+                    SelectGroupEvent?.Invoke(groupNumber);
+                }
+                */
+            }
+        }
     }
 }
