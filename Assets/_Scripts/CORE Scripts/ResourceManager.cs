@@ -1,52 +1,29 @@
-using System;
 using UnityEngine;
+using System;
+using System.Collections.Generic;
 
 public class ResourceManager : MonoBehaviour
 {
-    [SerializeField] private FactionDataSO startingFactionData;
+    public static ResourceManager Instance { get; private set; }
 
-    public int CurrentGold { get; private set; }
-    public int CurrentWood { get; private set; }
-    public int CurrentFood { get; private set; }
-    public int CurrentStone { get; private set; }
+    private Dictionary<ResourceType, int> inventory = new Dictionary<ResourceType, int>();
+    public event Action<ResourceType, int> OnResourceChanged;
 
-    public event Action<int> OnGoldChanged;
-    public event Action<int> OnWoodChanged;
-    public event Action<int> OnFoodChanged;
-    public event Action<int> OnStoneChanged;
-
-    private void Start()
+    private void Awake()
     {
-        InitializeResources();
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+
+        foreach (ResourceType type in Enum.GetValues(typeof(ResourceType)))
+        {
+            inventory[type] = 0;
+        }
     }
 
-    private void InitializeResources()
+    public void AddResource(ResourceType type, int amount)
     {
-        AddGold(startingFactionData.startingGold);
-        AddWood(startingFactionData.startingWood);
-        AddFood(startingFactionData.startingFood);
-        AddStone(startingFactionData.startingStone);
-    }
-
-    public void AddGold(int amount)
-    {
-        CurrentGold += amount;
-        OnGoldChanged?.Invoke(CurrentGold);
-    }
-
-    public void AddWood(int amount)
-    {
-        CurrentWood += amount;
-        OnGoldChanged?.Invoke(CurrentWood);
-    }
-    public void AddFood(int amount)
-    {
-        CurrentFood += amount;
-        OnGoldChanged?.Invoke(CurrentFood);
-    }
-    public void AddStone(int amount)
-    {
-        CurrentStone += amount;
-        OnGoldChanged?.Invoke(CurrentStone);
+        inventory[type] += amount;
+        OnResourceChanged?.Invoke(type, inventory[type]);
+        Debug.Log($"[ResourceManager] +{amount} {type}. Total: {inventory[type]}");
     }
 }
