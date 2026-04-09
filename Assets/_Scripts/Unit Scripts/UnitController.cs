@@ -51,7 +51,7 @@ public class UnitController : MonoBehaviour
         ChangeState(new UnitIdleState(this));
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         // Delega la ejecución frame a frame al estado actual
         stateMachine.Update();
@@ -67,12 +67,12 @@ public class UnitController : MonoBehaviour
         }
     }
 
-    public void SetCommand(Vector3 destination)
+    public virtual void SetCommand(Vector3 destination)
     {
         ChangeState(new UnitMoveState(this, destination));
     }
 
-    public void SetTarget(IInteractable newTarget)
+    public virtual void SetTarget(IInteractable newTarget)
     {
         // CORRECCIÓN 1: Usa el Factory Method en lugar de hardcodear el estado
         ChangeState(GetAttackState(newTarget));
