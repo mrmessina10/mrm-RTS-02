@@ -44,9 +44,9 @@ public class WorkerMoveToDropOffState : IState
 
     private IDropOffPoint FindNearestDropOff(ResourceType resourceType)
     {
-        // Implement logic to find the nearest drop-off point that accepts the given resource type
-        // queda para implementar junto al BuildingManager
-        return null;
+        if (BuildingManager.Instance == null) return null;
+
+        return BuildingManager.Instance.GetNearestDropOff(worker.transform.position, resourceType);
     }
 }
 
