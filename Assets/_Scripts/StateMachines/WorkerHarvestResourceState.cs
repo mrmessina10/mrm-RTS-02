@@ -13,6 +13,12 @@ public class WorkerHarvestResourceState : IState
     {
         worker.Movement.Stop();
         harvestTimer = 0f;
+
+        if (worker.UnitAnimator != null)
+        {
+            worker.UnitAnimator.SetBool("IsHarvestingWood", worker.currentCarriedType == ResourceType.Wood);
+            worker.UnitAnimator.SetBool("IsHarvestingFood", worker.currentCarriedType == ResourceType.Food);
+        }
     }
 
     public void Tick()
@@ -31,6 +37,9 @@ public class WorkerHarvestResourceState : IState
             int harvested = worker.currentResourceNode.Harvest(worker.HarvestAmountPerCycle);
             worker.currentCarriedAmount += harvested;
 
+            // Log temporal: reemplaza feedback visual/UI que todavía no existe (ni HUD de carga ni animación de recolección)
+            Debug.Log($"[WorkerHarvestResourceState] {worker.name} +{harvested} {worker.currentCarriedType}. Carga: {worker.currentCarriedAmount}/{worker.MaxCarryCapacity}");
+
             if(worker.currentCarriedAmount >= worker.MaxCarryCapacity)
             {
                 worker.ChangeState(new WorkerMoveToDropOffState(worker));
@@ -42,6 +51,11 @@ public class WorkerHarvestResourceState : IState
 
     public void Exit()
     {
-        Debug.Log("[WorkerHarvestResourceState] Exiting harvest state.");
+        // Reset explícito: si se interrumpe el estado con otra orden, evita que la animación de cosecha quede trabada
+        if (worker.UnitAnimator != null)
+        {
+            worker.UnitAnimator.SetBool("IsHarvestingWood", false);
+            worker.UnitAnimator.SetBool("IsHarvestingFood", false);
+        }
     }
 }

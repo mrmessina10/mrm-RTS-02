@@ -50,6 +50,9 @@ public class InputReader : ScriptableObject, GameInput.IPlayerActions
 
     public event System.Action<int> SelectGroupEvent;
 
+    // Mock de hotkeys de construcción (F1/F2, uno por edificio) — a reemplazar por un sistema de hotkeys tipo AoE2
+    public event System.Action<BuildingType> BuildRequestEvent;
+
     //=======================================================
     //  Implementacion de interfaz GameInput.IPlayerActions
     //=======================================================
@@ -160,5 +163,21 @@ public class InputReader : ScriptableObject, GameInput.IPlayerActions
                 */
             }
         }
+    }
+
+    public void OnBuildLumbermill(InputAction.CallbackContext context)
+    {
+        if (context.phase != InputActionPhase.Performed) return;
+
+        Debug.Log($"[InputReader] Build request: {BuildingType.Lumbermill}");
+        BuildRequestEvent?.Invoke(BuildingType.Lumbermill);
+    }
+
+    public void OnBuildFarm(InputAction.CallbackContext context)
+    {
+        if (context.phase != InputActionPhase.Performed) return;
+
+        Debug.Log($"[InputReader] Build request: {BuildingType.Farm}");
+        BuildRequestEvent?.Invoke(BuildingType.Farm);
     }
 }

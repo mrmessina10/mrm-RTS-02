@@ -20,6 +20,12 @@ public class UnitMoveState : IState
         {
             unit.UnitAnimator.SetBool("IsMoving", true);
         }
+
+        // Caminata con recursos encima: solo aplica a workers, el resto de las unidades no cargan nada
+        if (unit is WorkerController worker)
+        {
+            worker.UpdateCarryAnimation();
+        }
     }
 
     public void Tick()

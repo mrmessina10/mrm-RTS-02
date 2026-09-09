@@ -10,3 +10,5 @@ En `Tick()`:
 3. **Sistema anti-crowding**: si la velocidad es casi nula (`VelocitySqr < 0.05f`) pero no llegó a destino, acumula `stuckTimer`; pasado `STUCK_THRESHOLD` (0.25s) asume que está trabada contra otras unidades y aborta a `UnitIdleState` en vez de quedar bloqueada indefinidamente empujando a sus compañeras.
 
 Hay un bloque comentado con una versión anterior de detección de llegada por distancia cuadrada directa (`sqrMagnitude`), reemplazada por el chequeo del propio `NavMeshAgent`.
+
+Mismo chequeo `unit is WorkerController` que [UnitIdleState](UnitIdleState.md) para llamar `UpdateCarryAnimation()` en `Enter()` — un worker movido por click derecho directo (no por el loop de recolección) también debe mostrar la animación de caminata cargando si corresponde.

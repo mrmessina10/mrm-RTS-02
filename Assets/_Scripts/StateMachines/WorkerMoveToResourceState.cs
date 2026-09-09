@@ -15,6 +15,12 @@ public class WorkerMoveToResourceState : IState
         {
             worker.Movement.MoveTo(worker.currentResourceNode.Position);
         }
+
+        if (worker.UnitAnimator != null)
+        {
+            worker.UnitAnimator.SetBool("IsMoving", true);
+        }
+        worker.UpdateCarryAnimation();
     }
 
     public void Tick()
@@ -50,5 +56,10 @@ public class WorkerMoveToResourceState : IState
     public void Exit()
     {
         worker.Movement.Stop();
+
+        if (worker.UnitAnimator != null)
+        {
+            worker.UnitAnimator.SetBool("IsMoving", false);
+        }
     }
 }

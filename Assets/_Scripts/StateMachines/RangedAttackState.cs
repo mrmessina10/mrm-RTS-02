@@ -6,6 +6,7 @@ public class RangedAttackState : IState
     private UnitController unit;
     private IInteractable target;
     private float attackCooldown;
+    private float targetRadius;
 
     public RangedAttackState(UnitController unit, IInteractable target)
     {
@@ -17,6 +18,13 @@ public class RangedAttackState : IState
     {
        // Debug.Log($"{unit.name} entró en RangedAttackState");
         attackCooldown = 0f;
+
+        // El collider del target no cambia durante el estado, se cachea una sola vez en vez de por tick
+        targetRadius = 0.5f;
+        if (target.GetTransform().TryGetComponent<Collider>(out Collider col))
+        {
+            targetRadius = Mathf.Max(col.bounds.extents.x, col.bounds.extents.z);
+        }
     }
 
     public void Tick()
@@ -25,12 +33,6 @@ public class RangedAttackState : IState
         {
             unit.ChangeState(new UnitIdleState(unit));
             return;
-        }
-
-        float targetRadius = 0.5f;
-        if (target.GetTransform().TryGetComponent<Collider>(out Collider col))
-        {
-            targetRadius = Mathf.Max(col.bounds.extents.x, col.bounds.extents.z);
         }
 
         float effectiveRange = unit.InteractionRange + targetRadius;

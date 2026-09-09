@@ -201,6 +201,26 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""BuildLumbermill"",
+                    ""type"": ""Button"",
+                    ""id"": ""b1e2f3a4-5c6d-47e8-9a0b-1c2d3e4f5a6b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""BuildFarm"",
+                    ""type"": ""Button"",
+                    ""id"": ""c2f3a4b5-6d7e-48f9-0a1b-2c3d4e5f6a7b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -553,6 +573,28 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""NumberKey"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d3a4b5c6-7e8f-49a0-1b2c-3d4e5f6a7b8c"",
+                    ""path"": ""<Keyboard>/numpad1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BuildLumbermill"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e4b5c6d7-8f9a-40b1-2c3d-4e5f6a7b8c9d"",
+                    ""path"": ""<Keyboard>/numpad2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BuildFarm"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1161,6 +1203,8 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         m_Player_ShiftKey = m_Player.FindAction("ShiftKey", throwIfNotFound: true);
         m_Player_CtrlKey = m_Player.FindAction("CtrlKey", throwIfNotFound: true);
         m_Player_NumberKey = m_Player.FindAction("NumberKey", throwIfNotFound: true);
+        m_Player_BuildLumbermill = m_Player.FindAction("BuildLumbermill", throwIfNotFound: true);
+        m_Player_BuildFarm = m_Player.FindAction("BuildFarm", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1265,6 +1309,8 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_ShiftKey;
     private readonly InputAction m_Player_CtrlKey;
     private readonly InputAction m_Player_NumberKey;
+    private readonly InputAction m_Player_BuildLumbermill;
+    private readonly InputAction m_Player_BuildFarm;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1320,6 +1366,14 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/NumberKey".
         /// </summary>
         public InputAction @NumberKey => m_Wrapper.m_Player_NumberKey;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/BuildLumbermill".
+        /// </summary>
+        public InputAction @BuildLumbermill => m_Wrapper.m_Player_BuildLumbermill;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/BuildFarm".
+        /// </summary>
+        public InputAction @BuildFarm => m_Wrapper.m_Player_BuildFarm;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1379,6 +1433,12 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @NumberKey.started += instance.OnNumberKey;
             @NumberKey.performed += instance.OnNumberKey;
             @NumberKey.canceled += instance.OnNumberKey;
+            @BuildLumbermill.started += instance.OnBuildLumbermill;
+            @BuildLumbermill.performed += instance.OnBuildLumbermill;
+            @BuildLumbermill.canceled += instance.OnBuildLumbermill;
+            @BuildFarm.started += instance.OnBuildFarm;
+            @BuildFarm.performed += instance.OnBuildFarm;
+            @BuildFarm.canceled += instance.OnBuildFarm;
         }
 
         /// <summary>
@@ -1423,6 +1483,12 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @NumberKey.started -= instance.OnNumberKey;
             @NumberKey.performed -= instance.OnNumberKey;
             @NumberKey.canceled -= instance.OnNumberKey;
+            @BuildLumbermill.started -= instance.OnBuildLumbermill;
+            @BuildLumbermill.performed -= instance.OnBuildLumbermill;
+            @BuildLumbermill.canceled -= instance.OnBuildLumbermill;
+            @BuildFarm.started -= instance.OnBuildFarm;
+            @BuildFarm.performed -= instance.OnBuildFarm;
+            @BuildFarm.canceled -= instance.OnBuildFarm;
         }
 
         /// <summary>
@@ -1800,6 +1866,20 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnNumberKey(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "BuildLumbermill" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnBuildLumbermill(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "BuildFarm" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnBuildFarm(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

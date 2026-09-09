@@ -198,6 +198,9 @@ public class SelectionManager : MonoBehaviour
 
     private void HandleSelect()
     {
+        // Mientras se está colocando un edificio, el click lo consume BuildingPlacementController (confirmar), no la selección
+        if (BuildingPlacementController.Instance != null && BuildingPlacementController.Instance.IsPlacing) return;
+
         bool isShiftHeld = inputReader.IsShiftHeld;
 
         if (inputReader.IsLeftClickHeld)
@@ -231,6 +234,9 @@ public class SelectionManager : MonoBehaviour
 
     private void HandleMoveCommand()
     {
+        // Mientras se está colocando un edificio, el click derecho lo consume BuildingPlacementController (cancelar), no un comando
+        if (BuildingPlacementController.Instance != null && BuildingPlacementController.Instance.IsPlacing) return;
+
         if (selectedUnits.Count == 0) return;
 
         Ray ray = mainCamera.ScreenPointToRay(currentMousePosition);

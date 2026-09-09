@@ -27,6 +27,7 @@
 - [FloatEventChannelSO](ScriptableObjects/FloatEventChannelSO.md)
 - [IntEventChannelSO](ScriptableObjects/IntEventChannelSO.md)
 - [FactionDataSO](ScriptableObjects/FactionDataSO.md)
+- [BuildingDataSO](ScriptableObjects/BuildingDataSO.md)
 
 ## RTSCamera
 - [Player](RTSCamera/Scripts/Player.md)
@@ -48,6 +49,7 @@
 - [WorkerMoveToResourceState](StateMachines/WorkerMoveToResourceState.md)
 - [WorkerHarvestResourceState](StateMachines/WorkerHarvestResourceState.md)
 - [WorkerMoveToDropOffState](StateMachines/WorkerMoveToDropOffState.md)
+- [WorkerBuildState](StateMachines/WorkerBuildState.md)
 
 ## Resources
 - [ResourceType.cs (enums + interfaces)](Resources/ResourceType.md)
@@ -55,3 +57,12 @@
 
 ## Buildings
 - [DropOffBuilding](Buildings/DropOffBuilding.md)
+- [BuildingPlacement](Buildings/BuildingPlacement.md)
+- [BuildingPlacementController](Buildings/BuildingPlacementController.md)
+- [ConstructionSite](Buildings/ConstructionSite.md)
+
+## Editor
+- [ResourceNodePrefabGenerator](Editor/ResourceNodePrefabGenerator.md)
+- [DropOffBuildingPrefabGenerator](Editor/DropOffBuildingPrefabGenerator.md)
+- [CoreManagerSceneSetup](Editor/CoreManagerSceneSetup.md)
+- [BuildingPlacementSceneSetup](Editor/BuildingPlacementSceneSetup.md)

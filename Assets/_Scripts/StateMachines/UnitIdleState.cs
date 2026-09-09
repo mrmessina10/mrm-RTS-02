@@ -7,6 +7,9 @@ public class UnitIdleState : IState
     private float scanTimer = 0f;
     private const float SCAN_INTERVAL = 0.25f; // Escaneo optimizado 4 veces por segundo
 
+    // Buffer reutilizado entre llamadas para evitar el alloc de Physics.OverlapSphere
+    private static readonly Collider[] scanBuffer = new Collider[16];
+
     public UnitIdleState(UnitController unit)
     {
         this.unit = unit;
@@ -20,6 +23,12 @@ public class UnitIdleState : IState
         if (unit.UnitAnimator != null)
         {
             unit.UnitAnimator.SetBool("IsMoving", false);
+        }
+
+        // Idle con recursos encima es un estado propio del worker; el resto de las unidades no cargan nada
+        if (unit is WorkerController worker)
+        {
+            worker.UpdateCarryAnimation();
         }
     }
 
@@ -40,11 +49,11 @@ public class UnitIdleState : IState
 
     private void ScanForEnemies()
     {
-        Collider[] colliders = Physics.OverlapSphere(unit.transform.position, unit.VisionRange, unit.EnemyMask);
+        int hitCount = Physics.OverlapSphereNonAlloc(unit.transform.position, unit.VisionRange, scanBuffer, unit.EnemyMask);
 
-        if (colliders.Length > 0)
+        if (hitCount > 0)
         {
-            if (colliders[0].TryGetComponent<IInteractable>(out IInteractable enemyTarget))
+            if (scanBuffer[0].TryGetComponent<IInteractable>(out IInteractable enemyTarget))
             {
                 // ANTES: unit.ChangeState(new UnitAttackState(unit, enemyTarget));
 

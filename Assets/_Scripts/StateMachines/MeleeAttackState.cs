@@ -5,6 +5,7 @@ public class MeleeAttackState : IState
     private UnitController unit;
     private IInteractable target;
     private float attackCooldown;
+    private float targetRadius;
 
     public MeleeAttackState(UnitController unit, IInteractable target)
     {
@@ -15,6 +16,13 @@ public class MeleeAttackState : IState
     public void Enter()
     {
         attackCooldown = 0f; // Permite atacar inmediatamente al llegar
+
+        // El collider del target no cambia durante el estado, se cachea una sola vez en vez de por tick
+        targetRadius = 0.5f;
+        if (target.GetTransform().TryGetComponent<Collider>(out Collider col))
+        {
+            targetRadius = Mathf.Max(col.bounds.extents.x, col.bounds.extents.z);
+        }
     }
 
     public void Tick()
@@ -28,12 +36,6 @@ public class MeleeAttackState : IState
         }
 
         // 2. Cálculo de distancias dinámicas
-        float targetRadius = 0.5f;
-        if (target.GetTransform().TryGetComponent<Collider>(out Collider col))
-        {
-            targetRadius = Mathf.Max(col.bounds.extents.x, col.bounds.extents.z);
-        }
-
         float effectiveRange = unit.InteractionRange + targetRadius;
         float distanceSqr = (unit.transform.position - target.GetTransform().position).sqrMagnitude;
 

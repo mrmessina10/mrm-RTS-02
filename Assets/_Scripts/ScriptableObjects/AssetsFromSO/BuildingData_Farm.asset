@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b29951bb4d0bc114591a0398defca38e, type: 3}
+  m_Name: BuildingData_Farm
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDataSO
+  <BuildingType>k__BackingField: 2
+  <DisplayName>k__BackingField: Farm
+  <BuildingPrefab>k__BackingField: {fileID: 3852707420599846802, guid: 6966c6cc5e16bf24f8ccfac3d555725a, type: 3}
+  <ConstructionCost>k__BackingField: []
+  <Footprint>k__BackingField: {x: 2, y: 2}

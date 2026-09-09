@@ -8,6 +8,9 @@ Contrato para cualquier objeto del mundo que una unidad pueda tener como objetiv
 - `GetTransform()`: posición del objeto interactuable.
 - `Interact(UnitController unit)`: acción a ejecutar cuando una unidad interactúa directamente (ej. click manual, o fallback cuando el objetivo no es `IDamageable`).
 
-Implementado por: [ResourceNode](../Resources/ResourceNode.md) (`Harvest`), [DropOffBuilding](../Buildings/DropOffBuilding.md) (`None`, no interactuable directo), [EnemyUnit](../Unit%20Scripts/EnemyUnit.md) (`Attack`). También heredado indirectamente por `IHarvestable` e `IDropOffPoint`, que lo extienden.
+Implementado por: [ResourceNode](../Resources/ResourceNode.md) (`Harvest`), [DropOffBuilding](../Buildings/DropOffBuilding.md) (`None`, no interactuable directo), [EnemyUnit](../Unit%20Scripts/EnemyUnit.md) (`Attack`). También heredado indirectamente por `IHarvestable`, `IDropOffPoint` e `IConstructable`, que lo extienden.
 
 `InteractionType` es el enum que vive en este mismo archivo.
+
+## IConstructable
+Contrato para un edificio en construcción (`Build`). `IsComplete`, `BuildProgress` (0 a 1) y `AddBuildProgress(deltaTime)` — quien le suma tiempo de trabajo (los workers) no necesita saber nada del tipo de edificio concreto. `Position` es la misma conveniencia que ya tenían `IHarvestable`/`IDropOffPoint` (evita pasar por `GetTransform().position` en los estados). Implementado por [ConstructionSite](../Buildings/ConstructionSite.md); consumido por [WorkerController.SetTarget](../Unit%20Scripts/WorkerController.md) → [WorkerBuildState](../StateMachines/WorkerBuildState.md).

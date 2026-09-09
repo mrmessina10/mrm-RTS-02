@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -15,10 +14,18 @@ public class DropOffBuilding : MonoBehaviour, IDropOffPoint
     private void OnEnable()
     {
         // Registrar este edificio como punto de entrega para los recursos que acepta al construirlo o spawnearlo
-        //if (BuildingManager.Instance != null)
-        //{
-        //    BuildingManager.Instance.RegisterDropOffPoint(this);
-        //}
+        if (BuildingManager.Instance != null)
+        {
+            BuildingManager.Instance.RegisterDropOff(this);
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (BuildingManager.Instance != null)
+        {
+            BuildingManager.Instance.UnregisterDropOff(this);
+        }
     }
 
     public bool AcceptsResource(ResourceType resourceType)
@@ -28,9 +35,8 @@ public class DropOffBuilding : MonoBehaviour, IDropOffPoint
 
     public void Deposit(ResourceType resourceType, int amount)
     {
+        ResourceManager.Instance.AddResource(resourceType, amount);
         Debug.Log($"[DropOffBuilding] Depositando {amount} de {resourceType} en {gameObject.name}");
-        // mock
-
     }
 
     public Transform GetTransform() => transform;

@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+[DefaultExecutionOrder(-100)] // Asegura que este manager se inicialice antes que DropOffBuilding, que se registra en su OnEnable
 public class BuildingManager : MonoBehaviour
 {
     public static BuildingManager Instance { get; private set; }
