@@ -254,7 +254,7 @@ MonoBehaviour:
   combatType: 0
   projectilePrefab: {fileID: 0}
   firePoint: {fileID: 0}
-  interactionRange: 2
+  interactionRange: 2.5
   attackRate: 1
   attackDamage: 6
   attackType: 1
@@ -298,7 +298,7 @@ NavMeshAgent:
   m_Speed: 8
   m_Acceleration: 20
   avoidancePriority: 50
-  m_AngularSpeed: 120
+  m_AngularSpeed: 720
   m_StoppingDistance: 0.2
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
@@ -378,7 +378,7 @@ PrefabInstance:
     - target: {fileID: 5866666021909216657, guid: 2faa610713d3b3c439473daa55e8c60a, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 812f7b49222d883479bdfcdd66197ee5, type: 2}
+      objectReference: {fileID: 9100000, guid: f4c0086fa510f8843b3ad5b84f5ad946, type: 2}
     - target: {fileID: 5866666021909216657, guid: 2faa610713d3b3c439473daa55e8c60a, type: 3}
       propertyPath: m_ApplyRootMotion
       value: 0

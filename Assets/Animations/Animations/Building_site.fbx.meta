@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b3c2c990bdafb2b46987bb07b25e1fa1
+guid: 294a5eb9a53b5124dbe1438aabeb4a27
 ModelImporter:
   serializedVersion: 24501
   internalIDToNameTable: []
@@ -32,7 +32,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Food_animation
+      name: Building_animation
       takeName: mixamo.com
       internalID: -203655887218126122
       firstFrame: 0
@@ -533,13 +533,13 @@ ModelImporter:
         length: 0
         modified: 0
     skeleton:
-    - name: Gather_food(Clone)
+    - name: Building_site(Clone)
       parentName: 
       position: {x: 0, y: 0, z: 0}
       rotation: {x: 0, y: 0, z: 0, w: 1}
       scale: {x: 1, y: 1, z: 1}
     - name: mixamorig:Hips
-      parentName: Gather_food(Clone)
+      parentName: Building_site(Clone)
       position: {x: -0.017892346, y: 0.9580449, z: 0.0013701364}
       rotation: {x: -0.0032869352, y: 0.0006159804, z: 0.13561277, w: 0.9907563}
       scale: {x: 1, y: 1, z: 1}

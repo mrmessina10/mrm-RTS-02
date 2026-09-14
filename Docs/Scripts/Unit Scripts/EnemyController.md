@@ -9,3 +9,7 @@ Convive en el mismo GameObject con [EnemyUnit](EnemyUnit.md) (marca el objeto co
 - `patrolCenter` es opcional: si no se asigna en el Inspector, se usa la posición inicial del propio objeto (`transform.position` en `Awake`).
 - Requiere que el GameObject tenga un `NavMeshAgent` (vía `UnitMovement`) y que el área alrededor de `PatrolCenter` esté bakeada en el NavMesh.
 - `OnDrawGizmosSelected` dibuja el radio de patrullaje en el editor para facilitar el ajuste del área.
+
+## Dirección futura
+
+La intención de diseño es que `EnemyController` pase a heredar de `UnitController` en vez de ser una clase independiente, para reusar el sistema de combate genérico (`GetAttackState`, `MeleeAttackState`/`RangedAttackState`, detección por `OverlapSphere`) en vez de reimplementarlo del lado enemigo. Todavía no se hizo porque el patrullaje se está testeando de forma aislada primero; queda pendiente para cuando se ataque la IA de oleadas (Raiders, Siege engines, Shock units) y su lógica de targeting/avance hacia el pueblo.
