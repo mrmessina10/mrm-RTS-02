@@ -50,8 +50,11 @@ public class InputReader : ScriptableObject, GameInput.IPlayerActions
 
     public event System.Action<int> SelectGroupEvent;
 
-    // Mock de hotkeys de construcción (F1/F2, uno por edificio) — a reemplazar por un sistema de hotkeys tipo AoE2
+    // Mock de hotkeys de construcción (Numpad, uno por edificio) — a reemplazar por un sistema de hotkeys tipo AoE2
     public event System.Action<BuildingType> BuildRequestEvent;
+
+    // Entra en modo "trazar muro" (WallPlacementController) — sin payload, solo hay un tipo de segmento de muro
+    public event System.Action WallBuildRequestEvent;
 
     //=======================================================
     //  Implementacion de interfaz GameInput.IPlayerActions
@@ -179,5 +182,21 @@ public class InputReader : ScriptableObject, GameInput.IPlayerActions
 
         Debug.Log($"[InputReader] Build request: {BuildingType.Farm}");
         BuildRequestEvent?.Invoke(BuildingType.Farm);
+    }
+
+    public void OnBuildPalisade(InputAction.CallbackContext context)
+    {
+        if (context.phase != InputActionPhase.Performed) return;
+
+        Debug.Log("[InputReader] Wall build request: Palisade");
+        WallBuildRequestEvent?.Invoke();
+    }
+
+    public void OnBuildGate(InputAction.CallbackContext context)
+    {
+        if (context.phase != InputActionPhase.Performed) return;
+
+        Debug.Log($"[InputReader] Build request: {BuildingType.Gate}");
+        BuildRequestEvent?.Invoke(BuildingType.Gate);
     }
 }

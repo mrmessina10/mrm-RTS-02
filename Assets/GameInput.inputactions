@@ -122,6 +122,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "BuildPalisade",
+                    "type": "Button",
+                    "id": "d3e4f5a6-7b8c-49d0-1e2f-3a4b5c6d7e8f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "BuildGate",
+                    "type": "Button",
+                    "id": "e4f5a6b7-8c9d-40e1-2f3a-4b5c6d7e8f9a",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -496,6 +514,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "BuildFarm",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f5a6b7c8-9d0e-41f2-3a4b-5c6d7e8f9a0b",
+                    "path": "<Keyboard>/numpad3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "BuildPalisade",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a6b7c8d9-0e1f-42a3-4b5c-6d7e8f9a0b1c",
+                    "path": "<Keyboard>/numpad4",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "BuildGate",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

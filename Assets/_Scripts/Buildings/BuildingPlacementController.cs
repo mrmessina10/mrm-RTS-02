@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.AI;
 using System.Collections.Generic;
 
 // Modo de colocación de edificios: recibe el pedido de InputReader.BuildRequestEvent, sigue al mouse con un
@@ -68,6 +67,12 @@ public class BuildingPlacementController : MonoBehaviour
 
     private void HandleBuildRequest(BuildingType type)
     {
+        if (PlacementModeState.IsActive && !IsPlacing)
+        {
+            Debug.Log("[BuildingPlacementController] Ya hay otro modo de colocación activo, cancelalo primero (click derecho).");
+            return;
+        }
+
         BuildingDataSO data = FindBuildingData(type);
         if (data == null)
         {
@@ -99,18 +104,8 @@ public class BuildingPlacementController : MonoBehaviour
     {
         pendingBuilding = data;
         ghost = Instantiate(data.BuildingPrefab);
-        StripFunctionalComponents(ghost);
-    }
-
-    // El ghost es puramente visual: sin obstáculo de NavMesh, sin collider, sin ninguna lógica de gameplay real
-    private void StripFunctionalComponents(GameObject instance)
-    {
-        foreach (var obstacle in instance.GetComponentsInChildren<NavMeshObstacle>()) Destroy(obstacle);
-        foreach (var collider in instance.GetComponentsInChildren<Collider>()) Destroy(collider);
-        foreach (var placement in instance.GetComponentsInChildren<BuildingPlacement>()) Destroy(placement);
-        foreach (var dropOff in instance.GetComponentsInChildren<DropOffBuilding>()) Destroy(dropOff);
-        foreach (var health in instance.GetComponentsInChildren<Health>()) Destroy(health);
-        foreach (var selection in instance.GetComponentsInChildren<UnitSelectionHandler>()) Destroy(selection);
+        BuildingGhostUtility.StripFunctionalComponents(ghost);
+        PlacementModeState.IsActive = true;
     }
 
     private void UpdateGhostPosition()
@@ -123,15 +118,7 @@ public class BuildingPlacementController : MonoBehaviour
         ghost.transform.position = center;
 
         isValidPlacement = BuildingPlacement.IsAreaBuildable(hit.point, pendingBuilding.Footprint);
-        TintGhost(isValidPlacement ? validColor : invalidColor);
-    }
-
-    private void TintGhost(Color color)
-    {
-        foreach (var renderer in ghost.GetComponentsInChildren<MeshRenderer>())
-        {
-            renderer.material.color = color;
-        }
+        BuildingGhostUtility.Tint(ghost, isValidPlacement ? validColor : invalidColor);
     }
 
     private void HandleConfirm()
@@ -177,5 +164,6 @@ public class BuildingPlacementController : MonoBehaviour
         if (ghost != null) Destroy(ghost);
         ghost = null;
         pendingBuilding = null;
+        PlacementModeState.IsActive = false;
     }
 }

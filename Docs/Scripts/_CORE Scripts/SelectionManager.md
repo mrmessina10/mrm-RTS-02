@@ -10,7 +10,7 @@ Responsabilidades:
 - **Grupos de control (1-9)**: `AssignControlGroup`/`SelectControlGroup`, guardados en un diccionario local `int → List<ISelectable>`.
 - **Comandos** (`HandleMoveCommand`, click derecho): tres raycasts en orden de prioridad — enemigos, interactuables (recursos/edificios), y suelo. Sobre suelo calcula posiciones de formación en grilla ([`CalculateFormationPositions`](#calculateformationpositions)) para que las unidades seleccionadas no se apilen en el mismo punto.
 
-`HandleSelect`/`HandleMoveCommand` cortan temprano si [BuildingPlacementController.Instance.IsPlacing](../Buildings/BuildingPlacementController.md) es `true` — mientras se está colocando un edificio, el click lo consume ese controller (confirmar/cancelar), no la selección ni un comando de movimiento.
+`HandleSelect`/`HandleMoveCommand` cortan temprano si [PlacementModeState.IsActive](../Buildings/PlacementModeState.md) es `true` — mientras haya un modo de colocación activo (edificio único o muro), el click lo consume ese controller (confirmar/cancelar), no la selección ni un comando de movimiento.
 
 ## CalculateFormationPositions
 Genera una grilla cuadrada (columnas = `ceil(sqrt(n))`) centrada y orientada hacia la dirección de movimiento del grupo, y valida cada posición contra el NavMesh (`NavMesh.SamplePosition`), con fallback al punto central si no encuentra superficie válida.

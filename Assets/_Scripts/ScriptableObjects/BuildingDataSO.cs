@@ -6,7 +6,10 @@ public enum BuildingType
     TownCenter,
     Lumbermill,
     Farm,
-    Barracks
+    Barracks,
+    ArcherTower,
+    Palisade,
+    Gate
 }
 
 // Catálogo de datos de solo lectura de un tipo de edificio: qué es, qué cuesta construirlo y qué prefab instanciar

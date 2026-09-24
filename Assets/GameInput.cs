@@ -221,6 +221,26 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""BuildPalisade"",
+                    ""type"": ""Button"",
+                    ""id"": ""d3e4f5a6-7b8c-49d0-1e2f-3a4b5c6d7e8f"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""BuildGate"",
+                    ""type"": ""Button"",
+                    ""id"": ""e4f5a6b7-8c9d-40e1-2f3a-4b5c6d7e8f9a"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -595,6 +615,28 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""BuildFarm"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f5a6b7c8-9d0e-41f2-3a4b-5c6d7e8f9a0b"",
+                    ""path"": ""<Keyboard>/numpad3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BuildPalisade"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a6b7c8d9-0e1f-42a3-4b5c-6d7e8f9a0b1c"",
+                    ""path"": ""<Keyboard>/numpad4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""BuildGate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1205,6 +1247,8 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         m_Player_NumberKey = m_Player.FindAction("NumberKey", throwIfNotFound: true);
         m_Player_BuildLumbermill = m_Player.FindAction("BuildLumbermill", throwIfNotFound: true);
         m_Player_BuildFarm = m_Player.FindAction("BuildFarm", throwIfNotFound: true);
+        m_Player_BuildPalisade = m_Player.FindAction("BuildPalisade", throwIfNotFound: true);
+        m_Player_BuildGate = m_Player.FindAction("BuildGate", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1311,6 +1355,8 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_NumberKey;
     private readonly InputAction m_Player_BuildLumbermill;
     private readonly InputAction m_Player_BuildFarm;
+    private readonly InputAction m_Player_BuildPalisade;
+    private readonly InputAction m_Player_BuildGate;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1374,6 +1420,14 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/BuildFarm".
         /// </summary>
         public InputAction @BuildFarm => m_Wrapper.m_Player_BuildFarm;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/BuildPalisade".
+        /// </summary>
+        public InputAction @BuildPalisade => m_Wrapper.m_Player_BuildPalisade;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/BuildGate".
+        /// </summary>
+        public InputAction @BuildGate => m_Wrapper.m_Player_BuildGate;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1439,6 +1493,12 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @BuildFarm.started += instance.OnBuildFarm;
             @BuildFarm.performed += instance.OnBuildFarm;
             @BuildFarm.canceled += instance.OnBuildFarm;
+            @BuildPalisade.started += instance.OnBuildPalisade;
+            @BuildPalisade.performed += instance.OnBuildPalisade;
+            @BuildPalisade.canceled += instance.OnBuildPalisade;
+            @BuildGate.started += instance.OnBuildGate;
+            @BuildGate.performed += instance.OnBuildGate;
+            @BuildGate.canceled += instance.OnBuildGate;
         }
 
         /// <summary>
@@ -1489,6 +1549,12 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @BuildFarm.started -= instance.OnBuildFarm;
             @BuildFarm.performed -= instance.OnBuildFarm;
             @BuildFarm.canceled -= instance.OnBuildFarm;
+            @BuildPalisade.started -= instance.OnBuildPalisade;
+            @BuildPalisade.performed -= instance.OnBuildPalisade;
+            @BuildPalisade.canceled -= instance.OnBuildPalisade;
+            @BuildGate.started -= instance.OnBuildGate;
+            @BuildGate.performed -= instance.OnBuildGate;
+            @BuildGate.canceled -= instance.OnBuildGate;
         }
 
         /// <summary>
@@ -1880,6 +1946,20 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnBuildFarm(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "BuildPalisade" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnBuildPalisade(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "BuildGate" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnBuildGate(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

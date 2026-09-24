@@ -60,9 +60,13 @@
 - [BuildingPlacement](Buildings/BuildingPlacement.md)
 - [BuildingPlacementController](Buildings/BuildingPlacementController.md)
 - [ConstructionSite](Buildings/ConstructionSite.md)
+- [PlacementModeState](Buildings/PlacementModeState.md)
+- [BuildingGhostUtility](Buildings/BuildingGhostUtility.md)
+- [WallPlacementController](Buildings/WallPlacementController.md)
 
 ## Editor
 - [ResourceNodePrefabGenerator](Editor/ResourceNodePrefabGenerator.md)
 - [DropOffBuildingPrefabGenerator](Editor/DropOffBuildingPrefabGenerator.md)
 - [CoreManagerSceneSetup](Editor/CoreManagerSceneSetup.md)
 - [BuildingPlacementSceneSetup](Editor/BuildingPlacementSceneSetup.md)
+- [DefensiveBuildingPrefabGenerator](Editor/DefensiveBuildingPrefabGenerator.md)

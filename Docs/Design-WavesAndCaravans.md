@@ -58,7 +58,7 @@ El HUD muestra la ronda inmediatamente próxima y, dependiendo de mejoras/bonifi
 
 ## 8. Mapa y camino
 
-Generado proceduralmente. Dependencia de secuencia: hacen falta herramientas de editor de Unity (siguiendo el patrón ya existente en `Assets/_Scripts/Editor/`) diseñadas *antes* de poder construir el generador procedural en sí.
+Generado proceduralmente. Dependencia de secuencia: hacen falta herramientas de editor de Unity (siguiendo el patrón ya existente en `Assets/_Scripts/Editor/`) diseñadas *antes* de poder construir el generador procedural en sí. Diseño completo de ambas herramientas en [Design-MapEditorAndProceduralGeneration.md](Design-MapEditorAndProceduralGeneration.md).
 
 ## 9. Los cuatro ejes de balance del jugador
 

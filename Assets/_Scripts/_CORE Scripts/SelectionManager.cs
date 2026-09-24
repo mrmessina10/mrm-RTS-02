@@ -198,8 +198,8 @@ public class SelectionManager : MonoBehaviour
 
     private void HandleSelect()
     {
-        // Mientras se está colocando un edificio, el click lo consume BuildingPlacementController (confirmar), no la selección
-        if (BuildingPlacementController.Instance != null && BuildingPlacementController.Instance.IsPlacing) return;
+        // Mientras haya un modo de colocación activo (edificio único, muro), el click lo consume ese controller, no la selección
+        if (PlacementModeState.IsActive) return;
 
         bool isShiftHeld = inputReader.IsShiftHeld;
 
@@ -234,8 +234,8 @@ public class SelectionManager : MonoBehaviour
 
     private void HandleMoveCommand()
     {
-        // Mientras se está colocando un edificio, el click derecho lo consume BuildingPlacementController (cancelar), no un comando
-        if (BuildingPlacementController.Instance != null && BuildingPlacementController.Instance.IsPlacing) return;
+        // Mientras haya un modo de colocación activo (edificio único, muro), el click derecho lo consume ese controller, no un comando
+        if (PlacementModeState.IsActive) return;
 
         if (selectedUnits.Count == 0) return;
 

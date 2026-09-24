@@ -5,7 +5,7 @@
 Consume [InputReader.BuildRequestEvent](../_CORE%20Scripts/InputReader.md) (hotkeys mock Numpad 1/2) y resuelve el flujo de colocación de Fase 1 del [roadmap](../../Roadmap-VerticalSlice.md): ghost siguiendo el mouse → validación en vivo → confirmar (gasta recursos, instancia el edificio real) o cancelar.
 
 ## Ghost
-Al recibir un `BuildRequestEvent(BuildingType)`, busca el [BuildingDataSO](../ScriptableObjects/BuildingDataSO.md) correspondiente en `availableBuildings` e instancia su `BuildingPrefab` como ghost. `StripFunctionalComponents` le saca todo lo que no sea visual — `NavMeshObstacle`, `Collider`, [BuildingPlacement](BuildingPlacement.md), [DropOffBuilding](DropOffBuilding.md), `Health`, `UnitSelectionHandler` — para que un edificio en preview no carve el NavMesh, no bloquee físicamente, no se registre como drop-off ni sea seleccionable/dañable.
+Al recibir un `BuildRequestEvent(BuildingType)`, busca el [BuildingDataSO](../ScriptableObjects/BuildingDataSO.md) correspondiente en `availableBuildings` e instancia su `BuildingPrefab` como ghost, dejándolo puramente visual vía [BuildingGhostUtility.StripFunctionalComponents](BuildingGhostUtility.md) (compartida con [WallPlacementController](WallPlacementController.md)).
 
 Cada frame (`Update`, mientras `IsPlacing`), raycastea el mouse contra `groundMask`, snapea el punto a la grilla con `BuildingPlacement.GetFootprintOrigin` y tiñe el ghost verde/rojo según `BuildingPlacement.IsAreaBuildable`.
 
@@ -15,7 +15,9 @@ Cada frame (`Update`, mientras `IsPlacing`), raycastea el mouse contra `groundMa
 - Pedir otro edificio mientras ya hay uno en preview cancela el anterior antes de empezar el nuevo.
 
 ## Por qué SelectionManager necesitó un guard
-`SelectEvent`/`CommandEvent` los escuchan tanto este controller como [SelectionManager](../_CORE%20Scripts/SelectionManager.md) — sin coordinación, un click para confirmar/cancelar la colocación *también* dispararía selección de unidades o una orden de movimiento sobre lo ya seleccionado. `SelectionManager.HandleSelect`/`HandleMoveCommand` ahora cortan temprano si `BuildingPlacementController.Instance.IsPlacing` es `true`.
+`SelectEvent`/`CommandEvent` los escuchan tanto este controller como [SelectionManager](../_CORE%20Scripts/SelectionManager.md) — sin coordinación, un click para confirmar/cancelar la colocación *también* dispararía selección de unidades o una orden de movimiento sobre lo ya seleccionado. `SelectionManager.HandleSelect`/`HandleMoveCommand` cortan temprano si [PlacementModeState.IsActive](PlacementModeState.md) es `true` — flag compartido con [WallPlacementController](WallPlacementController.md), que también entra en modo colocación.
+
+Antes de pedir un edificio nuevo, si `PlacementModeState.IsActive` ya está en `true` por *otro* controller (ej. el de muro), la orden se ignora con un log — hay que cancelar ese modo primero (click derecho).
 
 ## Setup en escena
 No se auto-instancia: usar el menú `Tools/RTS/Ensure Building Placement Controller In Scene` ([BuildingPlacementSceneSetup](../Editor/BuildingPlacementSceneSetup.md)), que copia `inputReader`/`mainCamera`/`groundMask` desde el `SelectionManager` ya configurado y carga todos los `BuildingDataSO` del proyecto en `availableBuildings`.

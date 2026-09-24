@@ -8,9 +8,11 @@ Leyenda: ✅ diseñado (con doc propio) · 🔶 parcialmente definido · ⬜ no 
 
 - ✅ **Oleadas y Caravanas** — loop de rondas, roster de enemigos, sistema de caravanas/recursos estratégicos, eje Militarización-Cultura, condiciones de victoria/derrota. Ver [Design-WavesAndCaravans.md](Design-WavesAndCaravans.md).
 
-## Pendiente
+## Parcialmente definido
 
-- ⬜ **Roster de edificios y unidades**: qué edificios existen más allá de drop-off (militares, defensivos, económicos, culturales — las categorías ya están definidas en [Design-WavesAndCaravans.md](Design-WavesAndCaravans.md#10-compatibilidad-con-la-arquitectura-existente), falta poblarlas), y qué tipos de unidad de combate/trabajo tiene el jugador más allá de "melee/ranged genérico". Costos, stats y rol de cada uno.
+- 🔶 **Roster de edificios y unidades**: costos y rol de Lumbermill, Farm, Town Center (drop-off universal + único productor de workers + HQ) y el costo de producción del worker ya están decididos, con el razonamiento del diagrama de wave 1 detrás — ver [Design-EconomyBalance.md](Design-EconomyBalance.md). Falta: edificios militares/defensivos/culturales (Barracks, torres, talleres) y el costo/tiempo de producción de unidades militares — bloqueado por la cola de producción de Fase 2 del roadmap.
+
+## Pendiente
 
 - ⬜ **Curva de progresión y dificultad**: cuántas rondas tiene una partida, cómo escala la composición de oleadas ronda a ronda, cómo y cuándo aparecen los boss encounters, cómo escala el costo de los ítems de caravana.
 
