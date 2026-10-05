@@ -6,6 +6,10 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshObstacle))]
 public class BuildingPlacement : MonoBehaviour
 {
+    private const float OccupancyCheckHeight = 2f;
+    private const float OccupancyCheckInset = 0.05f; // evita falsos positivos por colliders que solo rozan el borde de la celda
+    private static int occupancyMask = -1;
+
     [SerializeField] private BuildingDataSO buildingData;
 
     private NavMeshObstacle obstacle;
@@ -35,7 +39,7 @@ public class BuildingPlacement : MonoBehaviour
         return new Vector3(originX, desiredCenter.y, originZ);
     }
 
-    // Sampleando el centro de cada celda del footprint, confirma que toda el área cae sobre NavMesh navegable
+    // Cada celda del footprint debe caer sobre NavMesh navegable y no estar ocupada físicamente por un recurso u otro edificio
     public static bool IsAreaBuildable(Vector3 desiredCenter, Vector2Int footprint, float sampleTolerance = 0.1f)
     {
         Vector3 origin = GetFootprintOrigin(desiredCenter, footprint);
@@ -45,6 +49,9 @@ public class BuildingPlacement : MonoBehaviour
             for (int z = 0; z < footprint.y; z++)
             {
                 Vector3 cellCenter = origin + new Vector3(x + 0.5f, 0f, z + 0.5f);
+
+                if (IsCellOccupied(cellCenter))
+                    return false;
 
                 if (!NavMesh.SamplePosition(cellCenter, out NavMeshHit hit, sampleTolerance, NavMesh.AllAreas))
                     return false;
@@ -57,5 +64,14 @@ public class BuildingPlacement : MonoBehaviour
         }
 
         return true;
+    }
+
+    private static bool IsCellOccupied(Vector3 cellCenter)
+    {
+        if (occupancyMask < 0) occupancyMask = LayerMask.GetMask("Resources", "Buildings");
+
+        Vector3 boxCenter = cellCenter + Vector3.up * OccupancyCheckHeight / 2f;
+        Vector3 halfExtents = new Vector3(0.5f - OccupancyCheckInset, OccupancyCheckHeight / 2f, 0.5f - OccupancyCheckInset);
+        return Physics.CheckBox(boxCenter, halfExtents, Quaternion.identity, occupancyMask, QueryTriggerInteraction.Ignore);
     }
 }

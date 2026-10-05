@@ -17,7 +17,6 @@ GameObject:
   - component: {fileID: 33187341132560594}
   - component: {fileID: 7655269725068221748}
   - component: {fileID: 1253026610063299211}
-  - component: {fileID: 195192430793681324}
   m_Layer: 7
   m_Name: testEnemy
   m_TagString: Untagged
@@ -195,17 +194,3 @@ MonoBehaviour:
   patrolCenter: {fileID: 0}
   patrolRadius: 8
   waitTimeAtPoint: 2
---- !u!114 &195192430793681324
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8341556266837897800}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cdfae07da4b648946917cfad410e616d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Health
-  maxHealth: 100
-  onDeathChannel: {fileID: 0}

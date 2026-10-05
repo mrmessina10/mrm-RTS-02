@@ -271,6 +271,59 @@ Transform:
   m_Children: []
   m_Father: {fileID: 60147502}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &37025274
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 37025275}
+  - component: {fileID: 37025276}
+  m_Layer: 0
+  m_Name: WallPlacementController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &37025275
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 37025274}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.83536, y: -4, z: 0.32577}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 721738775}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &37025276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 37025274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8df53d7a432befe45bcebec68166f2ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WallPlacementController
+  inputReader: {fileID: 11400000, guid: 926d63f4c0f24184499b9b300f4b2633, type: 2}
+  mainCamera: {fileID: 993489369}
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 2048
+  wallSegmentData: {fileID: 11400000, guid: a6fb47b683463ee4793f854a29369ac3, type: 2}
+  validColor: {r: 0, g: 1, b: 0, a: 0.5}
+  invalidColor: {r: 1, g: 0, b: 0, a: 0.5}
+  groundRaycastHeight: 100
 --- !u!1 &60147501
 GameObject:
   m_ObjectHideFlags: 0
@@ -1453,6 +1506,7 @@ Transform:
   - {fileID: 1062003083}
   - {fileID: 1380138636}
   - {fileID: 2000199949}
+  - {fileID: 37025275}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &828292278
@@ -3624,7 +3678,9 @@ MonoBehaviour:
     m_Bits: 2048
   availableBuildings:
   - {fileID: 11400000, guid: 2b004c4acf9a1af40ba7bf897620745b, type: 2}
+  - {fileID: 11400000, guid: c7fcfdc86d222f04ab1c34dca17df8a7, type: 2}
   - {fileID: 11400000, guid: a680126fb0f551447aa6b9abf0ed6d09, type: 2}
+  - {fileID: 11400000, guid: a6fb47b683463ee4793f854a29369ac3, type: 2}
   validColor: {r: 0, g: 1, b: 0, a: 0.5}
   invalidColor: {r: 1, g: 0, b: 0, a: 0.5}
 --- !u!1 &2075126170

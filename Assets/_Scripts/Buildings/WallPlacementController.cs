@@ -187,7 +187,7 @@ public class WallPlacementController : MonoBehaviour
             segment.AddComponent<ConstructionSite>().Initialize(wallSegmentData);
         }
 
-        Debug.Log($"[WallPlacementController] {validPositions.Count} cimientos de {wallSegmentData.DisplayName} colocados ({cells.Count - validPositions.Count} celdas salteadas por terreno inválido).");
+        Debug.Log($"[WallPlacementController] {validPositions.Count} cimientos de {wallSegmentData.DisplayName} colocados ({cells.Count - validPositions.Count} celdas salteadas por terreno inválido u ocupado).");
     }
 
     private bool TryGetPointerCell(out Vector2Int cell)
