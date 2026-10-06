@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public enum BuildingType
 {
-    TownCenter,
+    CityCenter,
     Lumbermill,
     Farm,
     Barracks,
@@ -26,4 +26,10 @@ public class BuildingDataSO : ScriptableObject
 
     [Tooltip("Tamaño del landprint en celdas de grilla (ancho x profundidad) que ocupa el edificio sobre el terreno")]
     [field: SerializeField] public Vector2Int Footprint { get; private set; } = Vector2Int.one;
+
+    [Tooltip("Unidades que este edificio puede producir (vacío si no produce); lo consume UnitProducer")]
+    [field: SerializeField] public List<UnitDataSO> ProducibleUnits { get; private set; }
+
+    [Tooltip("Máximo de unidades en cola de producción al mismo tiempo, contando la que se está produciendo")]
+    [field: SerializeField] public int ProductionQueueCapacity { get; private set; } = 5;
 }

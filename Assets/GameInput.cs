@@ -241,6 +241,16 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""TrainWorker"",
+                    ""type"": ""Button"",
+                    ""id"": ""f5b6c7d8-9e0f-41a2-3b4c-5d6e7f8a9b0c"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -637,6 +647,17 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""BuildGate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b7c8d9e0-1f2a-43b4-5c6d-7e8f9a0b1c2d"",
+                    ""path"": ""<Keyboard>/numpad5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TrainWorker"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1249,6 +1270,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         m_Player_BuildFarm = m_Player.FindAction("BuildFarm", throwIfNotFound: true);
         m_Player_BuildPalisade = m_Player.FindAction("BuildPalisade", throwIfNotFound: true);
         m_Player_BuildGate = m_Player.FindAction("BuildGate", throwIfNotFound: true);
+        m_Player_TrainWorker = m_Player.FindAction("TrainWorker", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1357,6 +1379,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_BuildFarm;
     private readonly InputAction m_Player_BuildPalisade;
     private readonly InputAction m_Player_BuildGate;
+    private readonly InputAction m_Player_TrainWorker;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1429,6 +1452,10 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @BuildGate => m_Wrapper.m_Player_BuildGate;
         /// <summary>
+        /// Provides access to the underlying input action "Player/TrainWorker".
+        /// </summary>
+        public InputAction @TrainWorker => m_Wrapper.m_Player_TrainWorker;
+        /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
         public InputActionMap Get() { return m_Wrapper.m_Player; }
@@ -1499,6 +1526,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @BuildGate.started += instance.OnBuildGate;
             @BuildGate.performed += instance.OnBuildGate;
             @BuildGate.canceled += instance.OnBuildGate;
+            @TrainWorker.started += instance.OnTrainWorker;
+            @TrainWorker.performed += instance.OnTrainWorker;
+            @TrainWorker.canceled += instance.OnTrainWorker;
         }
 
         /// <summary>
@@ -1555,6 +1585,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @BuildGate.started -= instance.OnBuildGate;
             @BuildGate.performed -= instance.OnBuildGate;
             @BuildGate.canceled -= instance.OnBuildGate;
+            @TrainWorker.started -= instance.OnTrainWorker;
+            @TrainWorker.performed -= instance.OnTrainWorker;
+            @TrainWorker.canceled -= instance.OnTrainWorker;
         }
 
         /// <summary>
@@ -1960,6 +1993,13 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnBuildGate(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "TrainWorker" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnTrainWorker(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

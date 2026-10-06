@@ -8,10 +8,28 @@ public class BuildingManager : MonoBehaviour
 
     private List<IDropOffPoint> activeDropOffs = new List<IDropOffPoint>();
 
+    public IHeadquarters Headquarters { get; private set; }
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
+    }
+
+    public void RegisterHeadquarters(IHeadquarters headquarters)
+    {
+        if (Headquarters != null && Headquarters != headquarters)
+        {
+            Debug.LogWarning("[BuildingManager] Ya hay un HQ registrado, se ignora el nuevo.");
+            return;
+        }
+
+        Headquarters = headquarters;
+    }
+
+    public void UnregisterHeadquarters(IHeadquarters headquarters)
+    {
+        if (Headquarters == headquarters) Headquarters = null;
     }
 
     public void RegisterDropOff(IDropOffPoint dropOff)

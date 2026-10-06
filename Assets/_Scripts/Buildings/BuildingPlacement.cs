@@ -39,7 +39,8 @@ public class BuildingPlacement : MonoBehaviour
         return new Vector3(originX, desiredCenter.y, originZ);
     }
 
-    // Cada celda del footprint debe caer sobre NavMesh navegable y no estar ocupada físicamente por un recurso u otro edificio
+    // Cada celda del footprint debe estar habilitada en la máscara edificable del mapa (si hay MapRoot), caer sobre
+    // NavMesh navegable y no estar ocupada físicamente por un recurso u otro edificio
     public static bool IsAreaBuildable(Vector3 desiredCenter, Vector2Int footprint, float sampleTolerance = 0.1f)
     {
         Vector3 origin = GetFootprintOrigin(desiredCenter, footprint);
@@ -49,6 +50,9 @@ public class BuildingPlacement : MonoBehaviour
             for (int z = 0; z < footprint.y; z++)
             {
                 Vector3 cellCenter = origin + new Vector3(x + 0.5f, 0f, z + 0.5f);
+
+                if (MapRoot.Instance != null && !MapRoot.Instance.IsBuildable(cellCenter))
+                    return false;
 
                 if (IsCellOccupied(cellCenter))
                     return false;

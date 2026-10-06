@@ -9,6 +9,7 @@ Responsabilidades:
 - **Box selection**: arrastre del mouse por encima de `dragThreshold` activa un rectángulo UI; al soltar, selecciona todo lo que caiga dentro (recorre `AllSelectables` de `GlobalUnitManager`, proyectando posición mundo → pantalla).
 - **Grupos de control (1-9)**: `AssignControlGroup`/`SelectControlGroup`, guardados en un diccionario local `int → List<ISelectable>`.
 - **Comandos** (`HandleMoveCommand`, click derecho): tres raycasts en orden de prioridad — enemigos, interactuables (recursos/edificios), y suelo. Sobre suelo calcula posiciones de formación en grilla ([`CalculateFormationPositions`](#calculateformationpositions)) para que las unidades seleccionadas no se apilen en el mismo punto.
+- **Orden de producción** (`HandleTrainUnitRequest`, `InputReader.TrainUnitRequestEvent`): recorre la selección y le pide la unidad a cada [IUnitProducer](../Interfaces/IUnitProducer.md) que encuentre (`TryEnqueueUnit`). Si no hay ningún edificio productor seleccionado, solo loguea. Vive acá porque la selección es estado privado de este script.
 
 `HandleSelect`/`HandleMoveCommand` cortan temprano si [PlacementModeState.IsActive](../Buildings/PlacementModeState.md) es `true` — mientras haya un modo de colocación activo (edificio único o muro), el click lo consume ese controller (confirmar/cancelar), no la selección ni un comando de movimiento.
 

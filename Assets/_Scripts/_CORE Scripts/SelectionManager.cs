@@ -41,6 +41,7 @@ public class SelectionManager : MonoBehaviour
         inputReader.PointerPositionEvent += HandlePointerPosition;
         inputReader.SelectEvent += HandleSelect;
         inputReader.CommandEvent += HandleMoveCommand;
+        inputReader.TrainUnitRequestEvent += HandleTrainUnitRequest;
 
         inputReader.AssignGroupEvent += AssignControlGroup;
         inputReader.SelectGroupEvent += SelectControlGroup;
@@ -54,6 +55,7 @@ public class SelectionManager : MonoBehaviour
         inputReader.PointerPositionEvent -= HandlePointerPosition;
         inputReader.SelectEvent -= HandleSelect;
         inputReader.CommandEvent -= HandleMoveCommand;
+        inputReader.TrainUnitRequestEvent -= HandleTrainUnitRequest;
 
         inputReader.AssignGroupEvent -= AssignControlGroup;
         inputReader.SelectGroupEvent -= SelectControlGroup;
@@ -334,6 +336,25 @@ public class SelectionManager : MonoBehaviour
             {
                 commandAction(controller);
             }
+        }
+    }
+
+    private void HandleTrainUnitRequest(UnitType unitType)
+    {
+        bool anyProducerSelected = false;
+
+        foreach (var selection in selectedUnits)
+        {
+            if (selection is MonoBehaviour monoSelection && monoSelection != null && monoSelection.TryGetComponent<IUnitProducer>(out IUnitProducer producer))
+            {
+                anyProducerSelected = true;
+                producer.TryEnqueueUnit(unitType);
+            }
+        }
+
+        if (!anyProducerSelected)
+        {
+            Debug.Log($"[SelectionManager] No hay ningún edificio productor seleccionado para producir {unitType}.");
         }
     }
 

@@ -8,6 +8,7 @@ public class ConstructionSite : MonoBehaviour, IConstructable
     private BuildingDataSO buildingData;
     private float elapsedBuildTime;
     private DropOffBuilding dropOffBuilding;
+    private UnitProducer unitProducer;
 
     public InteractionType Type => InteractionType.Build;
     public Vector3 Position => transform.position;
@@ -24,6 +25,9 @@ public class ConstructionSite : MonoBehaviour, IConstructable
         dropOffBuilding = GetComponent<DropOffBuilding>();
         if (dropOffBuilding != null) dropOffBuilding.enabled = false;
 
+        unitProducer = GetComponent<UnitProducer>();
+        if (unitProducer != null) unitProducer.enabled = false;
+
         if (IsComplete) Complete();
     }
 
@@ -38,6 +42,7 @@ public class ConstructionSite : MonoBehaviour, IConstructable
     private void Complete()
     {
         if (dropOffBuilding != null) dropOffBuilding.enabled = true;
+        if (unitProducer != null) unitProducer.enabled = true;
 
         Debug.Log($"[ConstructionSite] {buildingData.DisplayName} terminado en {name}.");
         Destroy(this);

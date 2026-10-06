@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class DropOffBuilding : MonoBehaviour, IDropOffPoint
 {
     [Header("Drop-Off Settings")]
-    [Tooltip("Lista de recursos que este edificio acepta (ej.: town center todos, lumber camp solo madera)")]
+    [Tooltip("Lista de recursos que este edificio acepta (ej.: city center todos, lumber camp solo madera)")]
     [SerializeField] private List<ResourceType> acceptedResources;
 
     // Implementación de IDropOffPoint

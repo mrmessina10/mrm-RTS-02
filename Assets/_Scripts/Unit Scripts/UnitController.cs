@@ -72,10 +72,28 @@ public class UnitController : MonoBehaviour
         ChangeState(new UnitMoveState(this, destination));
     }
 
+    // Orden del jugador sobre un interactuable: solo ataca lo declarado como Attack, el resto es una orden de acercarse
     public virtual void SetTarget(IInteractable newTarget)
     {
-        // CORRECCIÓN 1: Usa el Factory Method en lugar de hardcodear el estado
-        ChangeState(GetAttackState(newTarget));
+        if (newTarget.Type == InteractionType.Attack)
+        {
+            ChangeState(GetAttackState(newTarget));
+            return;
+        }
+
+        SetCommand(GetApproachPoint(newTarget));
+    }
+
+    private Vector3 GetApproachPoint(IInteractable target)
+    {
+        Transform targetTransform = target.GetTransform();
+
+        if (targetTransform.TryGetComponent<Collider>(out Collider targetCollider))
+        {
+            return targetCollider.ClosestPoint(transform.position);
+        }
+
+        return targetTransform.position;
     }
 
     public void TriggerAttackDamage()

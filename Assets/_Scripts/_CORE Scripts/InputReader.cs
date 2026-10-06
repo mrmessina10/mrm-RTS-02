@@ -56,6 +56,8 @@ public class InputReader : ScriptableObject, GameInput.IPlayerActions
     // Entra en modo "trazar muro" (WallPlacementController) — sin payload, solo hay un tipo de segmento de muro
     public event System.Action WallBuildRequestEvent;
 
+    public event System.Action<UnitType> TrainUnitRequestEvent;
+
     //=======================================================
     //  Implementacion de interfaz GameInput.IPlayerActions
     //=======================================================
@@ -198,5 +200,13 @@ public class InputReader : ScriptableObject, GameInput.IPlayerActions
 
         Debug.Log($"[InputReader] Build request: {BuildingType.Gate}");
         BuildRequestEvent?.Invoke(BuildingType.Gate);
+    }
+
+    public void OnTrainWorker(InputAction.CallbackContext context)
+    {
+        if (context.phase != InputActionPhase.Performed) return;
+
+        Debug.Log($"[InputReader] Train request: {UnitType.Worker}");
+        TrainUnitRequestEvent?.Invoke(UnitType.Worker);
     }
 }

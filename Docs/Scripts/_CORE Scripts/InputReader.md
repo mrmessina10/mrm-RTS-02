@@ -12,5 +12,8 @@ Grupos de control: `OnNumberKey` usa Shift para asignar grupo (modo testeo en ed
 - `BuildRequestEvent(BuildingType)`: edificios de footprint único, consumido por [BuildingPlacementController](../Buildings/BuildingPlacementController.md). `OnBuildLumbermill` (Numpad 1), `OnBuildFarm` (Numpad 2), `OnBuildGate` (Numpad 4, `BuildingType.Gate`).
 - `WallBuildRequestEvent`: sin payload (un solo tipo de segmento de muro). `OnBuildPalisade` (Numpad 3), consumido por [WallPlacementController](../Buildings/WallPlacementController.md) para entrar en modo trazado.
 
+**Hotkey de producción (mock temporal)**: mismo criterio y mismo destino que las de construcción.
+- `TrainUnitRequestEvent(UnitType)`: pide producir una unidad en los edificios seleccionados, consumido por [SelectionManager](SelectionManager.md). `OnTrainWorker` (Numpad 5, `UnitType.Worker`).
+
 ## Fuente / patrón
 Event Channel / ScriptableObject-based input, patrón recomendado por Unity para desacoplar el Input System de la lógica de gameplay. Referencia: [Unity Learn – ScriptableObject Architecture (Ryan Hipple)](https://www.youtube.com/watch?v=raQ3iHhE_Kk).

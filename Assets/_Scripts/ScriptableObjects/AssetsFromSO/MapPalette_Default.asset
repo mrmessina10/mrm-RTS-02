@@ -1,0 +1,103 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c7c1b105b82ecd4ab97920792502327, type: 3}
+  m_Name: MapPalette_Default
+  m_EditorClassIdentifier: Assembly-CSharp::MapPaletteSO
+  <Entries>k__BackingField:
+  - DisplayName: "\xC1rbol (madera)"
+    Prefab: {fileID: 8883608695893604609, guid: 84d13d4c186c8c14591dfe0b54b2dc4c, type: 3}
+    Category: 0
+    Spacing: 1.6
+    ScaleRange: {x: 0.8, y: 1.3}
+    VerticalOffset: 1
+    RandomYaw: 1
+    SnapToGrid: 0
+  - DisplayName: Arbusto (comida)
+    Prefab: {fileID: 3517374596817470135, guid: a8874b7bc42535242835e8597598bff5, type: 3}
+    Category: 0
+    Spacing: 1.5
+    ScaleRange: {x: 0.8, y: 1.1}
+    VerticalOffset: 0.5
+    RandomYaw: 1
+    SnapToGrid: 0
+  - DisplayName: Roca chica
+    Prefab: {fileID: 4408881480704353861, guid: 998acc51a4a33aa45a71ef872f2d6454, type: 3}
+    Category: 1
+    Spacing: 1.5
+    ScaleRange: {x: 0.7, y: 1.4}
+    VerticalOffset: 0
+    RandomYaw: 1
+    SnapToGrid: 0
+  - DisplayName: Roca grande
+    Prefab: {fileID: 8973978029530699296, guid: 2ad8ca5adb4637d41badb1ccd2bb122e, type: 3}
+    Category: 1
+    Spacing: 3
+    ScaleRange: {x: 0.8, y: 1.6}
+    VerticalOffset: 0
+    RandomYaw: 1
+    SnapToGrid: 0
+  - DisplayName: Matorral
+    Prefab: {fileID: 8285101933051065522, guid: da34c71c825c6ab4bbb19d0a109c467d, type: 3}
+    Category: 1
+    Spacing: 1
+    ScaleRange: {x: 0.6, y: 1.3}
+    VerticalOffset: 0
+    RandomYaw: 1
+    SnapToGrid: 0
+  - DisplayName: Casa chica
+    Prefab: {fileID: 8779020660039382330, guid: 9329f94d200632a4b91982243565dd23, type: 3}
+    Category: 2
+    Spacing: 5
+    ScaleRange: {x: 1, y: 1}
+    VerticalOffset: 0
+    RandomYaw: 0
+    SnapToGrid: 0
+  - DisplayName: Casa grande
+    Prefab: {fileID: 3311744413920440354, guid: 20a663bd154687f45bca30aab44096d6, type: 3}
+    Category: 2
+    Spacing: 6.5
+    ScaleRange: {x: 1, y: 1}
+    VerticalOffset: 0
+    RandomYaw: 0
+    SnapToGrid: 0
+  - DisplayName: Pozo
+    Prefab: {fileID: 7384190250768719517, guid: c691c73a5386b0d49bf4ee86ba5f15b7, type: 3}
+    Category: 2
+    Spacing: 2.5
+    ScaleRange: {x: 1, y: 1}
+    VerticalOffset: 0
+    RandomYaw: 1
+    SnapToGrid: 0
+  - DisplayName: Cerca
+    Prefab: {fileID: 2766328343458123338, guid: 98f2d4b32e92d6e43a782e0f2f177b75, type: 3}
+    Category: 2
+    Spacing: 1.9
+    ScaleRange: {x: 1, y: 1}
+    VerticalOffset: 0
+    RandomYaw: 0
+    SnapToGrid: 0
+  - DisplayName: Parva de heno
+    Prefab: {fileID: 8833330145795699321, guid: d4b028334c251a04b9bbc0e4fd7a1e01, type: 3}
+    Category: 2
+    Spacing: 2
+    ScaleRange: {x: 0.8, y: 1.2}
+    VerticalOffset: 0
+    RandomYaw: 1
+    SnapToGrid: 0
+  - DisplayName: Ruina
+    Prefab: {fileID: 3196833690692324488, guid: 68a221632cafe414db1be6c6deddeeee, type: 3}
+    Category: 2
+    Spacing: 3.5
+    ScaleRange: {x: 1, y: 1}
+    VerticalOffset: 0
+    RandomYaw: 1
+    SnapToGrid: 0

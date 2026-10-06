@@ -12,7 +12,7 @@ El camino es **compartido** entre oleadas y caravanas: las mismas defensas que e
 
 ## 2. Oleadas enemigas
 
-Tower defense clásico: los enemigos entran por el camino y avanzan hacia el Town Center (HQ, objetivo principal, condición de derrota si es destruido). La composición de cada oleada se diseña manualmente en tiempo y forma (balance artesanal, no generación puramente aleatoria).
+Tower defense clásico: los enemigos entran por el camino y avanzan hacia el City Center (HQ, objetivo principal, condición de derrota si es destruido). La composición de cada oleada se diseña manualmente en tiempo y forma (balance artesanal, no generación puramente aleatoria).
 
 Roster inicial de tipos de enemigo, cada uno con su propia lógica de targeting:
 
@@ -30,10 +30,13 @@ No son una oleada alternativa de combate: son una **tienda temporal**. Cada tipo
 - **Precios dinámicos**: cada compra encarece la siguiente compra del mismo tipo de ítem. Los precios se pueden resetear o reducir cumpliendo objetivos que la propia caravana propone.
 - **Consuelo sin compra**: si el jugador no puede pagar nada del catálogo, igual recibe una bonificación estándar de recursos. El tamaño de esa bonificación escala con qué tan volcada a la cultura está la ciudad (ver sección 5) — una ciudad más culta es más abierta para comerciar y recibe más.
 - **Selección de tipo de caravana**: aleatoriedad ponderada según los recursos/edificios disponibles del jugador, la cantidad de soldados, y el índice de Militarización.
+- ✅ **Única fuente de Oro**: el Oro no se recolecta ni se produce — solo se consigue comerciando con caravanas. 🔶 Falta definir por qué vía lo entrega cada caravana (ítem del catálogo, venta de excedentes, parte de la bonificación de consuelo) y en qué se gasta.
 
 ## 4. Recursos estratégicos ("strategic trading resources")
 
 Categoría de recursos separada de los recolectables (`ResourceType`, ver [ResourceType.md](Scripts/Resources/ResourceType.md)), producida únicamente por edificios económicos y talleres específicos. Corren por un sistema paralelo independiente del de recolección/inventario de recursos básicos — no se mezclan enums ni flujos. Cada tipo de caravana pide uno o más recursos estratégicos concretos.
+
+Los recolectables son tres: Wood, Food y Stone. El Oro queda fuera de los dos grupos: no sale de nodos del mapa ni de un taller, solo entra por comercio (sección 3).
 
 ## 5. Militarización — el eje central de tensión
 
@@ -49,12 +52,14 @@ Esto cierra el loop de tensión: una ciudad muy militarizada defiende mejor pero
 
 ## 6. Condición de victoria y derrota
 
-- **Derrota**: Town Center destruido (usa el canal `Channel_GameOver` ya existente, ver [GameStateManager.md](Scripts/_CORE%20Scripts/GameStateManager.md)).
+- **Derrota**: City Center destruido (usa el canal `Channel_GameOver` ya existente, ver [GameStateManager.md](Scripts/_CORE%20Scripts/GameStateManager.md)).
 - **Victoria**: sobrevivir un número preestablecido de rondas. Puede haber boss encounters seedeados en puntos específicos de la secuencia de rondas, con mayor desafío que una oleada normal.
 
 ## 7. UI
 
 El HUD muestra la ronda inmediatamente próxima y, dependiendo de mejoras/bonificaciones conseguidas durante la run actual, también algunas rondas siguientes (ventana de visión anticipada ampliable 🔶 — falta definir si lo único que escala es cuántas rondas a futuro se ven, o también el nivel de detalle mostrado de cada una).
+
+El índice de Militarización se muestra como una barra compacta junto a la población, con el detalle en un pop-up al pasar el mouse. Layout completo del HUD y resto de componentes en [Design-HUD.md](Design-HUD.md).
 
 ## 8. Mapa y camino
 
@@ -77,11 +82,13 @@ Dependencias de orden pendientes (no son incompatibilidades, son huecos de fases
 - ⬜ Población y producción de unidades (Fase 2 del roadmap) — la Militarización necesita "soldados vivos" como input real.
 - ⬜ `GameState` (enum en `GameStateManager`) solo contempla `GameOver` — falta agregar `Victory` para la condición de la sección 6.
 - ⬜ `FactionDataSO` existe sin uso — candidato natural a valores iniciales si en algún momento hay multi-facción, no bloqueante ahora.
+- ⬜ `ResourceType` todavía incluye `Gold` como si fuera recolectable — falta decidir si se queda en ese enum como recurso de inventario sin nodos ni drop-off, o si pasa al sistema de comercio.
 
 ## 11. Abierto / pendiente de afinar
 
 - Nombre definitivo del stat de Militarización.
 - Detalle de qué mejora exactamente la ventana de visión anticipada de la UI (sección 7).
 - Qué determina exactamente los "objetivos" que la caravana propone para resetear/reducir precios.
+- Cómo entrega Oro una caravana y en qué lo gasta el jugador (sección 3).
 - Catálogo y recurso estratégico concreto de cada tipo de caravana (más allá de Raiders/Siege/Shock del lado enemigo, todavía no hay tipos de caravana nombrados).
 - Balance numérico de todo lo anterior: no es parte de este documento de diseño, se resuelve en iteración de playtesting.

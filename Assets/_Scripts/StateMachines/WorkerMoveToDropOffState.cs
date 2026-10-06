@@ -23,13 +23,23 @@ public class WorkerMoveToDropOffState : IState
             return;
         }
 
-        worker.Movement.MoveTo(targetDropOffPoint.Position);
+        worker.Movement.MoveTo(GetApproachPoint());
 
         if (worker.UnitAnimator != null)
         {
             worker.UnitAnimator.SetBool("IsMoving", true);
         }
         worker.UpdateCarryAnimation();
+    }
+
+    // Punto del borde del edificio más cercano al worker: el centro de un edificio grande queda demasiado lejos del NavMesh tallado
+    private Vector3 GetApproachPoint()
+    {
+        if (targetDropOffPoint.GetTransform().TryGetComponent<Collider>(out Collider dropOffCollider))
+        {
+            return dropOffCollider.ClosestPoint(worker.transform.position);
+        }
+        return targetDropOffPoint.Position;
     }
 
     public void Tick()

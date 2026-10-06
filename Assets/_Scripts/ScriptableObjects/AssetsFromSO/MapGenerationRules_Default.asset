@@ -1,0 +1,134 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9366820467f0124289511b754bb4b2e, type: 3}
+  m_Name: MapGenerationRules_Default
+  m_EditorClassIdentifier: Assembly-CSharp::MapGenerationRulesSO
+  <Layout>k__BackingField:
+    PathToStartWeight: 2
+    PassThroughWeight: 1
+    SpawnCount: {x: 1, y: 2}
+    EdgeMargin: 6
+    StartDepth: {x: 0.62, y: 0.8}
+    StartLateral: {x: 0.3, y: 0.7}
+    StartPathOffset: {x: 16, y: 24}
+    MinSpawnDistance: 0.4
+    MinSpawnSeparation: 0.25
+    MinRouteLength: 0.4
+    MinSharedStretch: 0.12
+  <Start>k__BackingField:
+    ClearRadius: 10
+    MinBuildableRatio: 0.6
+    PathStopDistance: 5
+    SpawnClearRadius: 6
+  <Terrain>k__BackingField:
+    ReliefAmplitude: {x: 0.2, y: 0.6}
+    ReliefWavelength: {x: 30, y: 60}
+    PlateauCount: {x: 1, y: 4}
+    PlateauRadius: {x: 0.06, y: 0.13}
+    LevelHeight: 2.5
+    SecondLevelChance: 0.3
+    RampsPerPlateau: {x: 1, y: 2}
+    RampWidth: 5
+    RampGradient: 0.3
+    MaxWalkableSlope: 35
+  <Water>k__BackingField:
+    WaterLevel: -1
+    NoneWeight: 1
+    LakesWeight: 1.5
+    RiverWeight: 1.5
+    CoastWeight: 1
+    Depth: 2
+    LakeCount: {x: 1, y: 3}
+    LakeRadius: {x: 0.05, y: 0.1}
+    RiverWidth: {x: 5, y: 9}
+    Fords: {x: 1, y: 3}
+    FordWidth: 6
+    CoastDepth: {x: 0.08, y: 0.16}
+    FordClearance: 0.15
+  <Path>k__BackingField:
+    Width: {x: 4, y: 6}
+    Wander: {x: 1, y: 4}
+    WanderScale: 14
+    CliffCost: 25
+    WaterCost: 12
+    MaxGradient: 0.2
+    BuildMargin: 1
+    WaypointSpacing: 10
+  <Resources>k__BackingField:
+  - Type: 0
+    StarterNodes: {x: 3, y: 4}
+    StarterDistance: {x: 9, y: 13}
+    ExpansionClusters: {x: 2, y: 4}
+    ClusterSize: {x: 8, y: 14}
+    ExpansionDistance: {x: 0.2, y: 0.55}
+    PathClearance: 4
+  - Type: 1
+    StarterNodes: {x: 3, y: 4}
+    StarterDistance: {x: 9, y: 13}
+    ExpansionClusters: {x: 2, y: 4}
+    ClusterSize: {x: 8, y: 14}
+    ExpansionDistance: {x: 0.2, y: 0.55}
+    PathClearance: 4
+  <Scatter>k__BackingField:
+  - Name: Bosque
+    Prefabs:
+    - {fileID: 8883608695893604609, guid: 84d13d4c186c8c14591dfe0b54b2dc4c, type: 3}
+    Spacing: 2.8
+    Coverage: 0.85
+    Clumping: 0.85
+    ClumpScale: 26
+    PathClearance: 2
+    StartClearance: 14
+    MaxSlope: 25
+  - Name: Rocas
+    Prefabs:
+    - {fileID: 4408881480704353861, guid: 998acc51a4a33aa45a71ef872f2d6454, type: 3}
+    - {fileID: 4408881480704353861, guid: 998acc51a4a33aa45a71ef872f2d6454, type: 3}
+    - {fileID: 8973978029530699296, guid: 2ad8ca5adb4637d41badb1ccd2bb122e, type: 3}
+    Spacing: 7
+    Coverage: 0.3
+    Clumping: 0.5
+    ClumpScale: 14
+    PathClearance: 3
+    StartClearance: 16
+    MaxSlope: 35
+  - Name: Matorrales
+    Prefabs:
+    - {fileID: 8285101933051065522, guid: da34c71c825c6ab4bbb19d0a109c467d, type: 3}
+    Spacing: 3
+    Coverage: 0.25
+    Clumping: 0.6
+    ClumpScale: 12
+    PathClearance: 1
+    StartClearance: 10
+    MaxSlope: 25
+  <Landmarks>k__BackingField:
+  - Name: Aldea
+    Prefabs:
+    - {fileID: 8779020660039382330, guid: 9329f94d200632a4b91982243565dd23, type: 3}
+    - {fileID: 8779020660039382330, guid: 9329f94d200632a4b91982243565dd23, type: 3}
+    - {fileID: 3311744413920440354, guid: 20a663bd154687f45bca30aab44096d6, type: 3}
+    - {fileID: 7384190250768719517, guid: c691c73a5386b0d49bf4ee86ba5f15b7, type: 3}
+    - {fileID: 8833330145795699321, guid: d4b028334c251a04b9bbc0e4fd7a1e01, type: 3}
+    Count: {x: 0, y: 2}
+    Pieces: {x: 4, y: 6}
+    Radius: {x: 6, y: 8}
+    MinStartDistance: 0.25
+  - Name: Ruinas
+    Prefabs:
+    - {fileID: 3196833690692324488, guid: 68a221632cafe414db1be6c6deddeeee, type: 3}
+    Count: {x: 0, y: 2}
+    Pieces: {x: 2, y: 4}
+    Radius: {x: 4, y: 6}
+    MinStartDistance: 0.25
+  <MaxAttempts>k__BackingField: 12
+  <MinPlayableArea>k__BackingField: 0.3

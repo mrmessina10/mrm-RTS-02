@@ -14,18 +14,18 @@ Leyenda: ✅ hecho · 🔶 parcial / a medio conectar · ⬜ no empezado
 
 ### 3. Edificios de distinto tipo
 🔶 Parcial. Existe el modelo de datos ([BuildingDataSO](Scripts/ScriptableObjects/BuildingDataSO.md): tipo, costo, prefab, footprint) y la validación de terreno/obstáculo NavMesh ([BuildingPlacement](Scripts/Buildings/BuildingPlacement.md)). Roster inicial de construcción ampliado: 2 económicos (Lumbermill/Farm, ya resueltos) + 2 defensivos (Torre de Arqueros, Empalizada — muro + puerta de madera), en vez de dejar lo defensivo entero para Fase 2. Falta la lógica *funcional* de cada tipo:
-- **Drop-off point**: ✅ [DropOffBuilding](Scripts/Buildings/DropOffBuilding.md) conectado (ver punto 2), con prefabs reales — `Lumbermill`/`Farm` (footprint 2x2, [DropOffBuildingPrefabGenerator](Scripts/Editor/DropOffBuildingPrefabGenerator.md), costo/tiempo decididos en [Design-EconomyBalance.md](Design-EconomyBalance.md)) — y construcción real por workers vía [ConstructionSite](Scripts/Buildings/ConstructionSite.md) (ver Fase 1). Falta `TownCenter` — rol triple ya diseñado (drop-off universal, único productor de workers, HQ/objetivo de las oleadas — ver [Design-EconomyBalance.md §3](Design-EconomyBalance.md#3-town-center--rol-triple)), sin implementar todavía.
-- **Producción de unidades** (Barracks): ⬜ no existe — ningún edificio instancia unidades.
+- **Drop-off point**: ✅ [DropOffBuilding](Scripts/Buildings/DropOffBuilding.md) conectado (ver punto 2), con prefabs reales — `Lumbermill`/`Farm` (footprint 2x2, [DropOffBuildingPrefabGenerator](Scripts/Editor/DropOffBuildingPrefabGenerator.md), costo/tiempo decididos en [Design-EconomyBalance.md](Design-EconomyBalance.md)) — y construcción real por workers vía [ConstructionSite](Scripts/Buildings/ConstructionSite.md) (ver Fase 1). `CityCenter` (Centro de la Ciudad) 🔶 implementado con su rol triple (ver [Design-EconomyBalance.md §3](Design-EconomyBalance.md#3-city-center--rol-triple)): drop-off universal, productor de workers ([UnitProducer](Scripts/Buildings/UnitProducer.md)) y HQ ([Headquarters](Scripts/Buildings/Headquarters.md), registrado en `BuildingManager` como objetivo de las oleadas, con `Channel_GameOver` en su `Health`). Compila; falta generar el prefab (`Tools/RTS/Generate City Center Prefab`, ver [CityCenterPrefabGenerator](Scripts/Editor/CityCenterPrefabGenerator.md)) y probarlo en play mode.
+- **Producción de unidades**: 🔶 el sistema existe ([UnitProducer](Scripts/Buildings/UnitProducer.md) + [UnitDataSO](Scripts/ScriptableObjects/UnitDataSO.md): cola FIFO, costo al encolar, tiempo por unidad) y lo usa el City Center para workers. Falta el Barracks (prefab, unidades militares y sus costos).
 - **Defensa** (Torre de Arqueros): ⬜ no existe todavía, pero es candidato simple — reusa `BuildingDataSO`/`BuildingPlacement`/`ConstructionSite` tal cual, solo le falta un estado de ataque a enemigos en rango (reusar `RangedAttackState`/`Projectile` en vez de duplicar) y sus valores de costo/tiempo/combate.
 - **Defensa** (Empalizada — muro + puerta de madera): ✅ sistema de colocación implementado — [WallPlacementController](Scripts/Buildings/WallPlacementController.md) traza tiras de segmentos de 1x1 entre clicks sucesivos (Bresenham), cada celda sigue la elevación real del terreno, costo por celda válida (todo o nada por tramo), cada segmento con su propio `ConstructionSite`/`Health`. Puerta (`BuildingType.Gate`) es un edificio de footprint único aparte, mismo `BuildingPlacementController` de siempre. Falta cargar `ConstructionCost`/`ConstructionTime` (sin definir todavía) y probar en escena (`Tools/RTS/Generate Palisade Wall Prefabs` + `Tools/RTS/Ensure Wall Placement Controller In Scene`).
 - **Límite poblacional**: ⬜ no existe — no hay concepto de población ni de cap en el proyecto.
 - **Indexado por categoría** (dropoff/económico/cultural/militar/defensivo): ⬜ no existe — `BuildingManager` solo indexa `IDropOffPoint`. Necesario para que la IA de oleadas resuelva su objetivo prioritario (ver Fase 3).
 
 ### 4. Loop completo de recolección e inversión en construcción/creación
-🔶 Parcial. El lado de "recolección" ya cierra (ver punto 2) y la "inversión" en edificios también: [BuildingPlacementController](Scripts/Buildings/BuildingPlacementController.md) resuelve ghost + validación + costo + instanciación (Fase 1, con hotkeys mock). Falta cola de producción de *unidades* con costo (Fase 2) para cerrar el otro lado de la inversión.
+🔶 Parcial. El lado de "recolección" ya cierra (ver punto 2) y la "inversión" en edificios también: [BuildingPlacementController](Scripts/Buildings/BuildingPlacementController.md) resuelve ghost + validación + costo + instanciación (Fase 1, con hotkeys mock). La cola de producción de *unidades* con costo ya existe para workers (City Center, Fase 2); falta la militar para cerrar el otro lado de la inversión.
 
 ### 5. Loop completo de creación, interacción y muerte de unidades
-🔶 Parcial. Muerte e interacción (combate) están resueltas ([Health](Scripts/_CORE%20Scripts/Health.md), `IDamageable`, ambos attack states). *Creación* solo existe manual (unidades ya puestas en la escena/prefabs); falta creación en runtime desde un edificio de producción.
+🔶 Parcial. Muerte e interacción (combate) están resueltas ([Health](Scripts/_CORE%20Scripts/Health.md), `IDamageable`, ambos attack states). *Creación* en runtime implementada para workers desde el City Center ([UnitProducer](Scripts/Buildings/UnitProducer.md)), pendiente de probar en play mode; las unidades militares siguen siendo manuales (ya puestas en la escena/prefabs).
 
 ### 6. Core loop con condiciones de victoria y derrota
 ⬜ No empezado. [GameStateManager](Scripts/_CORE%20Scripts/GameStateManager.md) tiene el enum de estados y el evento de cambio, pero nada dispara `GameOver` ni una condición de victoria; el enum tampoco contempla `Victory` todavía. Tampoco hay sistema de oleadas ni de caravanas: lo único que existe del lado enemigo es [EnemyController](Scripts/Unit%20Scripts/EnemyController.md) con [EnemyPatrolState](Scripts/StateMachines/EnemyPatrolState.md) — patrulla, no ataca ni avanza hacia el pueblo. El diseño completo de este loop (rondas, roster de enemigos, caravanas, Militarización) está en [Design-WavesAndCaravans.md](Design-WavesAndCaravans.md); las fases 3 a 6 de abajo son su bajada a implementación.
@@ -52,9 +52,13 @@ Conectar lo que ya está construido antes de sumar sistemas nuevos.
 ### Fase 2 — Edificios funcionales por tipo
 
 **Mínimo jugable**
-- **Producción de workers** (Town Center, único productor — ver [Design-EconomyBalance.md §3](Design-EconomyBalance.md#3-town-center--rol-triple)): cola simple, costo 20 Food por worker ya decidido (fricción mínima a propósito, ver [Design-EconomyBalance.md §2](Design-EconomyBalance.md#2-costos-decididos)), tiempo de producción todavía sin definir.
-- **Producción de unidades militares** (Barracks): cola simple de creación con costo en recursos y tiempo de fabricación — costo/tiempo todavía abiertos, pero deben competir por el mismo Food que los workers (ver [Design-EconomyBalance.md §4](Design-EconomyBalance.md#4-la-tensión-food-workers-vs-militar)) para generar la tensión de inversión central del diseño.
-- **Límite poblacional**: contador de población actual/máxima; edificios "de vivienda" (o el mismo Town Center) aportan cap; producción bloqueada si se alcanza el límite. Es el input real de "soldados vivos"/"trabajadores vivos" que necesita Militarización (Fase 5).
+- 🔶 **City Center** (rol triple, ver [Design-EconomyBalance.md §3](Design-EconomyBalance.md#3-city-center--rol-triple)) — implementado, falta generar el prefab y probar en play mode:
+  - Drop-off universal: `DropOffBuilding` con Wood, Food y Stone.
+  - **Producción de workers** (único productor): [UnitProducer](Scripts/Buildings/UnitProducer.md), cola simple, 20 Food por worker (fricción mínima a propósito, ver [Design-EconomyBalance.md §2](Design-EconomyBalance.md#2-costos-decididos)), 10 s por worker (provisorio). Punto de entrada mock: seleccionar el City Center y Numpad 5.
+  - HQ: [Headquarters](Scripts/Buildings/Headquarters.md) lo registra en `BuildingManager.Headquarters` para la Fase 3; su `Health` levanta `Channel_GameOver` al destruirse (el cambio de estado sigue siendo Fase 6).
+  - Pendiente: cancelar pedidos de la cola, rally point, feedback visual de selección/progreso.
+- **Producción de unidades militares** (Barracks): reusa `UnitProducer`/`UnitDataSO` tal cual, falta el edificio y sus unidades — costo/tiempo todavía abiertos, pero deben competir por el mismo Food que los workers (ver [Design-EconomyBalance.md §4](Design-EconomyBalance.md#4-la-tensión-food-workers-vs-militar)) para generar la tensión de inversión central del diseño.
+- **Límite poblacional**: contador de población actual/máxima; edificios "de vivienda" (o el mismo City Center) aportan cap; producción bloqueada si se alcanza el límite. Es el input real de "soldados vivos"/"trabajadores vivos" que necesita Militarización (Fase 5).
 - **Defensa** (torre): estructura estática con `IDamageable` + un estado de ataque a enemigos en rango — puede reutilizar la lógica de `RangedAttackState`/`Projectile` en vez de duplicarla.
 - **Indexado por categoría en `BuildingManager`**: extender el registro más allá de `IDropOffPoint` para clasificar cada edificio como económico, cultural, militar o defensivo (ya declarado como dirección futura en [BuildingManager.md](Scripts/_CORE%20Scripts/BuildingManager.md)). Es requisito duro de la Fase 3: sin esto, Raiders y Siege engines no tienen cómo resolver su objetivo prioritario.
 
@@ -65,7 +69,7 @@ Conectar lo que ya está construido antes de sumar sistemas nuevos.
 
 **Mínimo jugable**
 - `EnemyController` pasa a heredar de `UnitController` (ya declarado como intención en [EnemyController.md](Scripts/Unit%20Scripts/EnemyController.md)) para reusar `GetAttackState`/`MeleeAttackState`/`RangedAttackState` en vez de reimplementar combate del lado enemigo.
-- `EnemyAttackState` + comportamiento de avance hacia el Town Center (objetivo = HQ) en lugar de patrullaje puro.
+- `EnemyAttackState` + comportamiento de avance hacia el City Center (objetivo = HQ) en lugar de patrullaje puro.
 - Al menos **un tipo de enemigo funcional** con targeting básico — Raiders es el candidato más simple (prioriza edificios económicos/culturales, evita defensas salvo que bloqueen el camino al HQ) para validar el loop de punta a punta.
 - Spawner de oleadas con estructura de rondas: secuencia de rondas, prep-time, timer visible.
 
@@ -80,6 +84,7 @@ Conectar lo que ya está construido antes de sumar sistemas nuevos.
 - Nuevo enum de recursos estratégicos, separado de `ResourceType` (ya declarado en [ResourceType.md](Scripts/Resources/ResourceType.md)), con al menos un edificio productor.
 - Una ronda puede resolverse como "Caravana" en vez de oleada (frecuencia fija al principio, la versión dinámica/balanceable es refinamiento posterior).
 - Un tipo de caravana funcional de punta a punta: llega por el camino, presenta un catálogo mínimo, resuelve la compra (o la bonificación de consuelo si no se puede pagar), se va.
+- Oro: las caravanas son su única fuente (no se recolecta). Al menos una vía para que esa caravana lo entregue.
 
 **Extensión**
 - Múltiples tipos de caravana con catálogo y recurso estratégico propios.
@@ -98,25 +103,25 @@ Conectar lo que ya está construido antes de sumar sistemas nuevos.
 - Definir el nombre final del stat.
 
 ### Fase 6 — Condiciones de victoria y derrota
-- Derrota: Town Center destruido → dispara `GameOver` vía `GameStateManager`/`GameManager` (el canal `Channel_GameOver` ya existe).
+- Derrota: City Center destruido → dispara `GameOver` vía `GameStateManager`/`GameManager` (el canal `Channel_GameOver` ya existe).
 - Victoria: sobrevivir N rondas — requiere agregar `Victory` al enum `GameState` de `GameStateManager` (hoy solo tiene `GameOver`).
 - Al menos un log/evento claro de fin de partida; UI de pantalla de victoria/derrota puede quedar como placeholder visual.
 
 ### Fase 7 — Bootstrap de partida
-- Estado inicial clásico de RTS: Town Center ya construido, un puñado de workers y unidades de combate, recursos iniciales — reutilizar [FactionDataSO](Scripts/ScriptableObjects/FactionDataSO.md) (hoy sin uso) para los valores de arranque.
+- Estado inicial clásico de RTS: City Center ya construido, un puñado de workers y unidades de combate, recursos iniciales — reutilizar [FactionDataSO](Scripts/ScriptableObjects/FactionDataSO.md) (hoy sin uso) para los valores de arranque.
 - Cámara centrada en el área inicial al comenzar la partida.
-- Mapa/camino fijo, armado a mano — la generación procedural (y las herramientas de editor que necesita antes) queda fuera del vertical slice, ver notas de scope.
+- Mapa/camino fijo, armado a mano — el editor de mapas ya tiene una primera versión en curso para esto (ver [Design-MapEditorAndProceduralGeneration.md](Design-MapEditorAndProceduralGeneration.md)); la generación procedural queda fuera del vertical slice, ver notas de scope.
 
 ### Fase 8 — HUD de partida
-No es parte de los 6 requisitos explícitos, pero es necesaria para que el vertical slice se pueda jugar sin mirar la consola. Cada ítem depende de datos de una fase distinta — se pueden asignar y ejecutar por separado, sin esperar a que el roadmap completo esté terminado:
+No es parte de los 6 requisitos explícitos, pero es necesaria para que el vertical slice se pueda jugar sin mirar la consola. Layout y componentes ya están decididos sobre una maqueta — ver [Design-HUD.md](Design-HUD.md). Cada ítem depende de datos de una fase distinta — se pueden asignar y ejecutar por separado, sin esperar a que el roadmap completo esté terminado:
 
 - **Minimapa** — sin dependencia, se puede empezar ya. Necesita posiciones de unidades/edificios ([GlobalUnitManager](Scripts/_CORE%20Scripts/GlobalUnitManager.md)) y del terreno.
 - **Información en tiempo real de unidades** (panel de selección) — sin dependencia, se puede empezar ya. La selección ya existe (`SelectionManager`/`ISelectable`/`UnitSelectionHandler`).
-- **HUD de recursos** — depende de Fase 0. `ResourceManager.OnResourceChanged` ya está listo para escucharse. Extender para recursos estratégicos depende de Fase 4.
+- **HUD de recursos** — depende de Fase 0 para los recolectables (Wood, Food, Stone). `ResourceManager.OnResourceChanged` ya está listo para escucharse. Oro y recursos estratégicos dependen de Fase 4.
 - **Edificios disponibles** (menú de construcción) — depende de Fase 1 (flujo de colocación/costo).
 - **Población actual/máxima** — depende de Fase 2 (límite poblacional).
 - **Anuncio de próxima ronda** (oleada vs caravana, y tipo) — depende de Fase 3/4 (spawner con estructura de rondas). La ventana de visión anticipada ampliable es extensión, no mínimo.
-- **Índice de Militarización** — depende de Fase 5.
+- **Índice de Militarización** — depende de Fase 5. Barra compacta junto a la población, con el detalle en un pop-up al pasar el mouse.
 - **Pantalla de victoria/derrota** — depende de Fase 6.
 
 ---

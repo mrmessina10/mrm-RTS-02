@@ -11,6 +11,8 @@ public static class BuildingGhostUtility
         foreach (var collider in instance.GetComponentsInChildren<Collider>()) Object.Destroy(collider);
         foreach (var placement in instance.GetComponentsInChildren<BuildingPlacement>()) Object.Destroy(placement);
         foreach (var dropOff in instance.GetComponentsInChildren<DropOffBuilding>()) Object.Destroy(dropOff);
+        foreach (var producer in instance.GetComponentsInChildren<UnitProducer>()) Object.Destroy(producer);
+        foreach (var headquarters in instance.GetComponentsInChildren<Headquarters>()) Object.Destroy(headquarters);
         foreach (var health in instance.GetComponentsInChildren<Health>()) Object.Destroy(health);
         foreach (var selection in instance.GetComponentsInChildren<UnitSelectionHandler>()) Object.Destroy(selection);
     }

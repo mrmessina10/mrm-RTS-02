@@ -16,4 +16,4 @@ Estructura del prefab:
 
 **Layer `Buildings` (nuevo, índice 10)**: agregado en `ProjectSettings/TagManager.asset`, junto a `Resources` (mismo criterio: capa dedicada por categoría de entidad, sin pisar `Units`/`Interactables`). `SelectionManager.selectionMask` en la escena se actualizó para incluir `Buildings` además de `Units` (era `64`, pasó a `1088`) — si no, los edificios quedarían invisibles para el click de selección.
 
-Si un prefab con ese nombre ya existe, lo saltea con warning. `TownCenter` y `Barracks` (producción, no drop-off puro) quedan para cuando se aborde esa parte del roadmap (Fase 2) — no los genera este script.
+Si un prefab con ese nombre ya existe, lo saltea con warning. `CityCenter` tiene su propio generador ([CityCenterPrefabGenerator](CityCenterPrefabGenerator.md)); `Barracks` (producción, no drop-off puro) queda para cuando se aborde esa parte del roadmap (Fase 2).

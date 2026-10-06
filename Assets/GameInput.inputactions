@@ -140,6 +140,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "TrainWorker",
+                    "type": "Button",
+                    "id": "f5b6c7d8-9e0f-41a2-3b4c-5d6e7f8a9b0c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -536,6 +545,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "BuildGate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b7c8d9e0-1f2a-43b4-5c6d-7e8f9a0b1c2d",
+                    "path": "<Keyboard>/numpad5",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TrainWorker",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
